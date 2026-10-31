@@ -1,0 +1,3277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="LIFE OS FINANÇAS" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>LIFE OS PRO — Financeiro</title>
+  <style>
+    :root {
+      --bg-base: #09090b;
+      --bg-sidebar: #0d0d10;
+      --bg-card: #131317;
+      --bg-elevated: #1a1a20;
+      --bg-hover: #22222a;
+      --border-line: #26262f;
+      --border-yellow: rgba(250, 204, 21, 0.45);
+      --border-green: rgba(74, 222, 128, 0.4);
+      --border-red: rgba(248, 113, 113, 0.4);
+      --yellow: #facc15;
+      --yellow-bright: #fde047;
+      --yellow-soft: rgba(250, 204, 21, 0.12);
+      --yellow-mid: rgba(250, 204, 21, 0.24);
+      --green: #4ade80;
+      --green-soft: rgba(74, 222, 128, 0.12);
+      --orange: #f97316;
+      --red: #f87171;
+      --red-soft: rgba(248, 113, 113, 0.12);
+      --text-white: #fafafa;
+      --text-gray: #a1a1aa;
+      --text-dim: #71717a;
+      --text-black: #09090b;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --ease: cubic-bezier(.2,.7,.2,1);
+      --glow: 0 0 0 1px rgba(250,204,21,.35), 0 8px 28px -10px rgba(250,204,21,.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: radial-gradient(900px 420px at 85% -10%, rgba(250,204,21,.06), transparent 60%), var(--bg-base);
+      color: var(--text-white);
+      font-family: var(--font-sans);
+      font-feature-settings: 'cv11','ss01','tnum';
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.012em;
+    }
+
+    ::selection { background: var(--yellow); color: var(--text-black); }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: #2a2a33; border-radius: 10px; border: 2px solid var(--bg-base); }
+    ::-webkit-scrollbar-thumb:hover { background: #3a3a46; }
+    :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; border-radius: 6px; }
+
+    /* MOBILE TOP HEADER */
+    .mobile-header {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 45;
+      background: rgba(13, 13, 16, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-line);
+      padding: 12px 16px;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .mobile-menu-btn {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-line);
+      color: var(--yellow);
+      border-radius: var(--radius-sm);
+      padding: 7px 11px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* SIDEBAR */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 48;
+    }
+
+    .sidebar {
+      width: 256px;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0f0f13, #0b0b0e);
+      border-right: 1px solid var(--border-line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 14px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      flex-shrink: 0;
+      z-index: 50;
+      transition: transform 0.25s ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 2px 8px 18px;
+      border-bottom: 1px solid var(--border-line);
+      margin-bottom: 14px;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: var(--yellow);
+      color: var(--text-black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+      box-shadow: 0 6px 18px -6px rgba(250,204,21,.6);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .brand-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .brand-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-title {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      color: var(--text-white);
+    }
+
+    .brand-tag {
+      font-size: 0.62rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--yellow);
+      color: var(--yellow);
+    }
+
+    .brand-clock {
+      font-size: 0.73rem;
+      color: var(--text-gray);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .nav-group-label {
+      font-size: 0.64rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-dim);
+      padding: 12px 10px 5px;
+    }
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      list-style: none;
+    }
+
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 11px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-gray);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .18s var(--ease), color .18s var(--ease), transform .18s var(--ease);
+      text-align: left;
+    }
+
+    .nav-btn-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .nav-btn-left svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .nav-btn:hover {
+      background: var(--bg-elevated);
+      color: var(--text-white);
+      transform: translateX(2px);
+    }
+
+    .nav-btn.active {
+      background: var(--yellow);
+      color: var(--text-black);
+      font-weight: 800;
+      box-shadow: var(--glow);
+    }
+
+    .nav-count {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: var(--bg-elevated);
+      color: var(--text-gray);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .nav-btn.active .nav-count {
+      background: rgba(0, 0, 0, 0.18);
+      color: var(--text-black);
+    }
+
+    .sidebar-footer {
+      padding-top: 14px;
+      margin-top: 14px;
+      border-top: 1px solid var(--border-line);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .status-pill-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-line);
+      color: var(--text-gray);
+      margin-bottom: 4px;
+      cursor: pointer;
+      transition: border-color 0.15s ease;
+    }
+
+    .status-pill-bar:hover {
+      border-color: var(--yellow);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      display: inline-block;
+      margin-right: 6px;
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .status-dot.online {
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.7);
+    }
+
+    .status-dot.syncing {
+      background: var(--yellow);
+      box-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
+    }
+
+    /* MAIN WORKSPACE */
+    .workspace-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 22px 30px 70px;
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* TOP BAR: SYNC STATUS */
+    .top-utility-bar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+      align-items: stretch;
+    }
+
+    .sync-banner-box {
+      background: linear-gradient(135deg, rgba(250,204,21,.06), rgba(19,19,23,.92) 50%);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .sync-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .sync-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-line);
+      color: var(--text-white);
+    }
+
+    .sync-pill.connected {
+      border-color: rgba(74, 222, 128, 0.45);
+      color: var(--green);
+    }
+
+    .sync-meta-text {
+      font-size: 0.78rem;
+      color: var(--text-gray);
+    }
+
+    .sync-banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .panel-card {
+      background: linear-gradient(180deg, #15151a, #121216);
+      border: 1px solid #24242c;
+      border-radius: 14px;
+      padding: 18px;
+      transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+    }
+
+    .panel-card:hover {
+      border-color: var(--border-yellow);
+    }
+
+    .panel-card.income-window {
+      border-top: 2px solid var(--green);
+    }
+    .panel-card.income-window:hover {
+      border-color: var(--border-green);
+    }
+
+    .panel-card.expense-window {
+      border-top: 2px solid var(--red);
+    }
+    .panel-card.expense-window:hover {
+      border-color: var(--border-red);
+    }
+
+    .panel-card.timeline-window {
+      border-top: 2px solid var(--yellow);
+    }
+
+    /* SECTION HEADERS */
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-line);
+    }
+
+    .section-title-group h1 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-white);
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title-group h1::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: var(--yellow);
+      border-radius: 2px;
+    }
+
+    .section-title-group p {
+      font-size: 0.8rem;
+      color: var(--text-gray);
+      margin-top: 3px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .cal-period-label {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--yellow);
+      min-width: 140px;
+      text-transform: capitalize;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      color: var(--text-white);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s var(--ease), border-color .15s var(--ease), transform .12s var(--ease), color .15s var(--ease);
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      border-color: var(--yellow);
+      color: var(--yellow);
+    }
+
+    .btn:active { transform: scale(.97); }
+
+    .btn-yellow {
+      background: var(--yellow);
+      border: 1px solid var(--yellow);
+      color: var(--text-black);
+      font-weight: 800;
+      box-shadow: 0 6px 18px -8px rgba(250,204,21,.55);
+    }
+
+    .btn-yellow:hover {
+      background: var(--yellow-bright);
+      color: var(--text-black);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 0.73rem;
+    }
+
+    /* FORMS & INPUTS */
+    .form-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .input, .select, .textarea {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-sm);
+      padding: 8px 11px;
+      color: var(--text-white);
+      font-size: 0.83rem;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .input:focus, .select:focus, .textarea:focus {
+      border-color: var(--yellow);
+    }
+
+    .input-grow {
+      flex: 1;
+      min-width: 170px;
+    }
+
+    /* PANEL HEADERS & STRUCTURED 2-LINE ITEM CARDS (OPÇÃO 2) */
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-line);
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .panel-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .panel-title {
+      font-size: .84rem;
+      font-weight: 800;
+      letter-spacing: .02em;
+      color: var(--text-white);
+      text-transform: uppercase;
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .item-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      border-radius: 12px;
+      padding: 12px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      transition: border-color 0.14s ease, background 0.15s var(--ease), transform 0.14s ease;
+    }
+
+    .item-row:hover {
+      border-color: #3a3a46;
+      background: rgba(255,255,255,.028);
+    }
+
+    .item-row.carryover-row {
+      background: linear-gradient(90deg, rgba(250, 204, 21, 0.11), rgba(19, 19, 23, 0.95));
+      border-color: var(--border-yellow);
+    }
+
+    /* Estrutura em 2 linhas para deixar descrição e valor destacados e alinhados */
+    .item-left {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-top-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .item-bottom-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-left: 30px;
+      flex-wrap: wrap;
+    }
+
+    .check-box {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      border: 1.5px solid var(--text-dim);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      color: transparent;
+      font-size: 0.72rem;
+      font-weight: 900;
+      transition: all 0.12s ease;
+    }
+
+    .check-box:hover { border-color: var(--yellow); }
+    .check-box.checked {
+      background: var(--yellow);
+      border-color: var(--yellow);
+      color: var(--text-black);
+    }
+
+    .mono-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 5px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-line);
+      color: var(--yellow);
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Descrição mais destacada, limpa e padronizada */
+    .item-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .item-amount {
+      font-size: 0.96rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .item-amount.income {
+      color: var(--green);
+    }
+
+    .item-amount.expense {
+      color: var(--red);
+    }
+
+    .item-amount.carry {
+      color: var(--yellow);
+    }
+
+    .pill-tag {
+      font-size: 0.69rem;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 5px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-line);
+      color: var(--text-gray);
+      flex-shrink: 0;
+    }
+
+    .pill-tag.yellow {
+      background: var(--yellow-soft);
+      border-color: var(--yellow-mid);
+      color: var(--yellow);
+    }
+
+    .pill-tag.green {
+      background: var(--green-soft);
+      border-color: var(--border-green);
+      color: var(--green);
+    }
+
+    .pill-tag.red {
+      background: var(--red-soft);
+      border-color: var(--border-red);
+      color: var(--red);
+    }
+
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .filter-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .filter-chip {
+      padding: 4px 10px;
+      border-radius: 5px;
+      border: 1px solid var(--border-line);
+      background: transparent;
+      color: var(--text-gray);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .filter-chip.active {
+      background: var(--yellow);
+      border-color: var(--yellow);
+      color: var(--text-black);
+      font-weight: 700;
+    }
+
+    /* LAYOUT GRIDS */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; align-items: start; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+
+    .metric-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      border-top: 2px solid var(--yellow);
+      border-radius: var(--radius-md);
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .metric-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-gray);
+    }
+
+    .metric-val {
+      font-size: 1.28rem;
+      font-weight: 800;
+      color: var(--yellow);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-sub {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .bar-list { display: flex; flex-direction: column; gap: 11px; }
+    .bar-row { display: flex; flex-direction: column; gap: 5px; }
+    .bar-label { display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-gray); font-weight: 500; }
+    .bar-track { height: 5px; background: var(--bg-elevated); border-radius: 99px; overflow: hidden; }
+    .bar-fill { height: 100%; background: linear-gradient(90deg, #eab308, var(--yellow-bright)); border-radius: 99px; transition: width .7s var(--ease); }
+
+    /* CHRONOLOGICAL STATEMENT TABLE */
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-sm);
+    }
+
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ledger-table th {
+      text-align: left;
+      padding: 10px 12px;
+      background: var(--bg-elevated);
+      color: var(--yellow);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border-line);
+      white-space: nowrap;
+    }
+
+    .ledger-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--border-line);
+      color: var(--text-white);
+      vertical-align: middle;
+    }
+
+    .ledger-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .ledger-table tr:hover td {
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .ledger-table tr.carry-row td {
+      background: rgba(250, 204, 21, 0.08);
+    }
+
+    .delta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.79rem;
+      white-space: nowrap;
+    }
+
+    .delta-badge.up {
+      background: var(--green-soft);
+      border: 1px solid var(--border-green);
+      color: var(--green);
+    }
+
+    .delta-badge.down {
+      background: var(--red-soft);
+      border: 1px solid var(--border-red);
+      color: var(--red);
+    }
+
+    .running-bal-cell {
+      font-weight: 800;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: tabIn .3s var(--ease); }
+    @keyframes tabIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    /* PAIRING & SYNC STEPS */
+    .sync-step-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-size: 0.78rem;
+      color: var(--text-gray);
+      line-height: 1.55;
+    }
+    .sync-step-box strong { color: var(--text-white); }
+    .qr-preview-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-top: 10px;
+    }
+    .qr-img-wrap {
+      width: 112px;
+      height: 112px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .qr-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+
+    /* THUMBNAILS & LIGHTBOX */
+    .item-thumb {
+      width: 38px;
+      height: 38px;
+      border-radius: 7px;
+      object-fit: cover;
+      border: 1px solid var(--border-yellow);
+      cursor: zoom-in;
+      flex-shrink: 0;
+      background: var(--bg-elevated);
+      transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+    }
+    .item-thumb:hover {
+      transform: scale(1.07);
+      box-shadow: 0 4px 14px rgba(250, 204, 21, 0.35);
+    }
+
+    .lightbox-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(8px);
+      z-index: 140;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lightbox-backdrop.open { display: flex; }
+    .lightbox-box {
+      max-width: 920px;
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-yellow);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 92vh;
+    }
+    .lightbox-img-stage {
+      background: #050507;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      max-height: 74vh;
+    }
+    .lightbox-img-stage img {
+      max-width: 100%;
+      max-height: 74vh;
+      object-fit: contain;
+      display: block;
+    }
+    .lightbox-footer {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--border-line);
+    }
+
+    /* MOBILE BOTTOM NAVIGATION BAR */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(13, 13, 16, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-line);
+      z-index: 46;
+      padding: 6px 8px calc(10px + env(safe-area-inset-bottom, 0px));
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .mob-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-gray);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 16px;
+      border-radius: 6px;
+    }
+
+    .mob-tab-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .mob-tab-btn.active {
+      color: var(--yellow);
+      font-weight: 800;
+    }
+
+    /* MODAL & TOAST */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--yellow);
+      border-radius: var(--radius-md);
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-title { font-size: 0.98rem; font-weight: 800; margin-bottom: 14px; color: var(--yellow); text-transform: uppercase; letter-spacing: 0.04em; }
+    .modal-form { display: flex; flex-direction: column; gap: 9px; }
+    .modal-form label { font-size: 0.72rem; color: var(--text-gray); font-weight: 600; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+    .repeat-box {
+      background: var(--bg-elevated);
+      border: 1px dashed var(--border-yellow);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast-notification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 120;
+      background: #16161d;
+      border: 1px solid var(--yellow);
+      color: var(--text-white);
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.65);
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast-notification.show { display: inline-flex; animation: tabIn 0.22s var(--ease); }
+
+    /* RESPONSIVE BREAKPOINTS */
+    @media (max-width: 1200px) {
+      .grid-5 { grid-template-columns: repeat(2, 1fr); }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 860px) {
+      body { flex-direction: column; }
+      .mobile-header { display: flex; }
+      .mobile-bottom-nav { display: flex; }
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-105%);
+        width: 274px;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-backdrop.open { display: block; }
+      .main-content { padding: 14px 14px 96px; }
+      .grid-5 { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .input, .select, .textarea { font-size: 16px; }
+      .form-bar > * { flex: 1 1 calc(50% - 8px); min-width: 130px; }
+      .form-bar > .input-grow, .form-bar > .btn-yellow { flex: 1 1 100%; }
+      .item-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .item-bottom-line { padding-left: 0; }
+      .item-actions { width: 100%; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }
+      .toast-notification { bottom: 76px; left: 14px; right: 14px; justify-content: center; }
+      .qr-preview-box { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- MOBILE DRAWER BACKDROP -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar(false)"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="mainSidebar">
+    <div>
+      <div class="brand">
+        <div class="brand-mark" id="brandAvatarBox" onclick="triggerProfilePhotoUpload()" title="Clique para alterar sua foto de perfil">L</div>
+        <div class="brand-info">
+          <div class="brand-title-row">
+            <span class="brand-title">LIFE OS</span>
+            <span class="brand-tag">FINANÇAS</span>
+          </div>
+          <span class="brand-clock" id="liveSidebarClock">--/--/---- • --:--</span>
+        </div>
+      </div>
+
+      <div class="status-pill-bar" onclick="switchTabByName('config')" title="Clique para configurar a Sincronização Simultânea PC &amp; Celular">
+        <span><span class="status-dot" id="sidebarSyncDot"></span><span id="sidebarSyncStatusText">Modo Local</span></span>
+        <span id="sidebarCloudActionText" style="color:var(--yellow);font-weight:700;">Sincronizar ⚙</span>
+      </div>
+
+      <div class="nav-group-label">Gestão &amp; Produtividade</div>
+      <ul class="nav-list">
+        <li>
+          <button class="nav-btn active" data-tab="financeiro" onclick="switchTab('financeiro', this)">
+            <span class="nav-btn-left">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>Financeiro</span>
+            </span>
+            <span class="nav-count" id="navFinMonthPill">Mês</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-btn" data-tab="tarefas" onclick="switchTab('tarefas', this)">
+            <span class="nav-btn-left">
+              <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <span>Tarefas</span>
+            </span>
+            <span class="nav-count" id="navTasksCountPill">0</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="nav-group-label">Sincronização &amp; Nuvem</div>
+      <ul class="nav-list" style="margin-top:2px;">
+        <li>
+          <button class="nav-btn" data-tab="config" onclick="switchTab('config', this)">
+            <span class="nav-btn-left">
+              <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              <span>Sincronizar PC &amp; Celular</span>
+            </span>
+            <span class="nav-count" id="navSyncBadge">Local</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn btn-yellow" style="width:100%;" onclick="downloadFullHtmlFile()">⬇ Baixar Aplicativo (.HTML)</button>
+      <button class="btn" style="width:100%;" id="copyFullCodeBtn" onclick="copyFullHtmlCode()">📋 Copiar Código Completo</button>
+      <button class="btn" style="width:100%;" onclick="exportBackup()">Exportar Dados (.json)</button>
+      <label class="btn" style="width:100%;cursor:pointer;">
+        Importar Dados (.json)
+        <input type="file" accept=".json" style="display:none;" onchange="importBackupFile(event)" />
+      </label>
+    </div>
+  </aside>
+
+  <div class="workspace-wrap">
+    <!-- MOBILE HEADER -->
+    <header class="mobile-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="mobile-menu-btn" onclick="toggleMobileSidebar(true)">☰ Menu</button>
+        <span style="font-weight:800;font-size:0.95rem;">LIFE OS <span style="color:var(--yellow);">FINANÇAS</span></span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button class="btn btn-sm" id="mobSyncNowBtn" onclick="syncNowManual()" title="Sincronizar com a nuvem agora">↻ Sync</button>
+        <button class="btn btn-yellow btn-sm" onclick="switchTabByName('config')">Celular / Nuvem</button>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TOP BAR: REAL-TIME SYNC BAR -->
+      <div class="top-utility-bar">
+        <div class="sync-banner-box">
+          <div class="sync-banner-left">
+            <span class="sync-pill" id="topSyncBadge">
+              <span class="status-dot" id="topSyncDot" style="margin-right:2px;"></span>
+              <span id="topSyncStateLabel">Sincronização Local</span>
+            </span>
+            <span class="sync-meta-text" id="topSyncSubText">Seus dados estão salvos e o saldo do mês anterior é transferido automaticamente para o mês atual.</span>
+          </div>
+          <div class="sync-banner-actions">
+            <button class="btn btn-sm" onclick="syncNowManual()" id="topSyncNowBtn">↻ Sincronizar Agora</button>
+            <button class="btn btn-yellow btn-sm" onclick="switchTabByName('config')">Conectar Celular</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           ABA PRINCIPAL: FINANCEIRO MENSAL
+           ========================================== -->
+      <div id="tab-financeiro" class="tab-panel active">
+        <div class="section-header">
+          <div class="section-title-group">
+            <h1>Financeiro Mensal</h1>
+            <p>Janelas separadas de Receitas e Despesas, repetição por vários meses e extrato em ordem de data com evolução de saldo.</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-sm" onclick="changeFinanceMonth(-1)">◀ Mês Anterior</button>
+            <span class="cal-period-label" id="finMonthHeaderLabel" style="min-width:150px;text-align:center;">---</span>
+            <button class="btn btn-sm" onclick="changeFinanceMonth(1)">Próximo Mês ▶</button>
+            <button class="btn btn-sm" onclick="goToCurrentFinanceMonth()">Mês Atual</button>
+            <button class="btn btn-yellow btn-sm" onclick="duplicateAllFixedExpensesToNextMonth()" title="Escolher por quantos meses repetir todas as contas deste mês">Repetir Contas nos Próximos Meses</button>
+          </div>
+        </div>
+
+        <!-- 5 CARDS DE RESUMO FINANCEIRO -->
+        <div class="grid-5" style="margin-bottom:16px;">
+          <div class="metric-box">
+            <div class="metric-info">
+              <span class="metric-label">Saldo Mês Anterior</span>
+              <span class="metric-val" id="finPrevCarryover">R$ 0,00</span>
+              <span class="kpi-sub" id="finPrevCarryoverSub">Transferido p/ este mês</span>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-info">
+              <span class="metric-label">Receitas no Mês</span>
+              <span class="metric-val" id="finTotalIncome" style="color:var(--green);">R$ 0,00</span>
+              <span class="kpi-sub">Entradas do mês</span>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-info">
+              <span class="metric-label">Despesas no Mês</span>
+              <span class="metric-val" id="finTotalExpense" style="color:var(--red);">R$ 0,00</span>
+              <span class="kpi-sub">Saídas totais do mês</span>
+            </div>
+          </div>
+          <div class="metric-box" style="border-color:var(--border-yellow);">
+            <div class="metric-info">
+              <span class="metric-label">Saldo Livre Acumulado</span>
+              <span class="metric-val" id="finNetBalance">R$ 0,00</span>
+              <span class="kpi-sub" id="finNetBalanceSub">Com saldo anterior</span>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-info">
+              <span class="metric-label">Pendente de Pagamento</span>
+              <span class="metric-val" id="finPendingAmount" style="color:var(--orange);">R$ 0,00</span>
+              <span class="kpi-sub">Contas em aberto no mês</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BARRA DE LANÇAMENTO COM REPETIÇÃO / PARCELAMENTO POR MESES -->
+        <div class="form-bar">
+          <select id="finTypeInput" class="select">
+            <option value="Despesa">Despesa (-)</option>
+            <option value="Receita">Receita (+)</option>
+          </select>
+          <input type="text" id="finDescInput" class="input input-grow" placeholder="Descrição (ex: Salário, Aluguel, Mercado, Cartão)..." onkeydown="if(event.key==='Enter') addFinanceItem()" />
+          <input type="number" step="0.01" id="finValInput" class="input" style="width:125px;" placeholder="Valor R$" onkeydown="if(event.key==='Enter') addFinanceItem()" />
+          <select id="finRepeatModeInput" class="select" title="Escolha se o valor será repetido fixo ou dividido entre os meses">
+            <option value="repeat">Repetir Valor Fixo</option>
+            <option value="divide">Dividir (Parcelado)</option>
+          </select>
+          <div style="display:inline-flex;align-items:center;gap:4px;background:var(--bg-elevated);border:1px solid var(--border-line);border-radius:var(--radius-sm);padding:0 8px;" title="Quantidade de meses que este lançamento vai se repetir">
+            <span style="font-size:0.72rem;color:var(--text-gray);font-weight:700;">Meses:</span>
+            <input type="number" min="1" max="120" id="finInstallmentsInput" class="input" style="width:58px;border:none;padding:8px 4px;text-align:center;" value="1" />
+          </div>
+          <select id="finCatInput" class="select">
+            <option value="Salário / Renda">Salário / Renda</option>
+            <option value="Moradia / Fixas">Moradia / Fixas</option>
+            <option value="Alimentação">Alimentação</option>
+            <option value="Estudos / Faculdade">Estudos / Faculdade</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Saúde / Academia">Saúde / Academia</option>
+            <option value="Lazer / Cartão">Lazer / Cartão</option>
+            <option value="Outros">Outros</option>
+          </select>
+          <input type="date" id="finDateInput" class="input" />
+          <select id="finStatusInput" class="select">
+            <option value="Pago">Pago / Recebido</option>
+            <option value="Pendente">Pendente</option>
+          </select>
+          <button class="btn btn-yellow" onclick="addFinanceItem()">+ Lançar</button>
+        </div>
+
+        <!-- DUAS JANELAS SEPARADAS: RECEITAS vs DESPESAS -->
+        <div class="grid-2" style="margin-bottom:16px;">
+          <!-- JANELA 1: RECEITAS -->
+          <div class="panel-card income-window">
+            <div class="panel-header">
+              <div class="panel-title-wrap">
+                <span class="panel-title" style="color:var(--green);">▲ Janela de Receitas (+)</span>
+                <span class="pill-tag green" id="windowIncomeSubtotal">R$ 0,00</span>
+              </div>
+              <div class="filter-row" id="incomeStatusFilters">
+                <button class="filter-chip active" onclick="setIncomeStatusFilter('Todos', this)">Todas</button>
+                <button class="filter-chip" onclick="setIncomeStatusFilter('Pago', this)">Recebidas</button>
+                <button class="filter-chip" onclick="setIncomeStatusFilter('Pendente', this)">Pendentes</button>
+              </div>
+            </div>
+            <div class="item-list" id="finIncomesList"></div>
+          </div>
+
+          <!-- JANELA 2: DESPESAS -->
+          <div class="panel-card expense-window">
+            <div class="panel-header">
+              <div class="panel-title-wrap">
+                <span class="panel-title" style="color:var(--red);">▼ Janela de Despesas (-)</span>
+                <span class="pill-tag red" id="windowExpenseSubtotal">R$ 0,00</span>
+              </div>
+              <div class="filter-row" id="expenseStatusFilters">
+                <button class="filter-chip active" onclick="setExpenseStatusFilter('Todos', this)">Todas</button>
+                <button class="filter-chip" onclick="setExpenseStatusFilter('Pago', this)">Pagas</button>
+                <button class="filter-chip" onclick="setExpenseStatusFilter('Pendente', this)">Pendentes</button>
+              </div>
+            </div>
+            <div class="item-list" id="finExpensesList"></div>
+          </div>
+        </div>
+
+        <!-- JANELA 3 (NO FINAL): EXTRATO CRONOLÓGICO COM AUMENTO / DIMINUIÇÃO E SALDO ACUMULADO -->
+        <div class="panel-card timeline-window" style="margin-bottom:16px;">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <span class="panel-title" style="color:var(--yellow);">📊 Extrato Cronológico (Receitas &amp; Despesas por Ordem de Data)</span>
+              <span class="pill-tag yellow" id="timelineSummaryBadge">Evolução do Saldo</span>
+            </div>
+            <div class="filter-row" id="timelineStatusFilters">
+              <button class="filter-chip active" onclick="setTimelineStatusFilter('Todos', this)">Todos os Lançamentos</button>
+              <button class="filter-chip" onclick="setTimelineStatusFilter('Pago', this)">Apenas Pagos / Recebidos</button>
+              <button class="filter-chip" onclick="setTimelineStatusFilter('Pendente', this)">Apenas Pendentes</button>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Tipo</th>
+                  <th>Descrição &amp; Categoria</th>
+                  <th>Status</th>
+                  <th>Aumento / Diminuição</th>
+                  <th>Saldo Acumulado Após Lançamento</th>
+                  <th style="text-align:right;">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="finChronologicalBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ANÁLISE DE DESPESAS POR CATEGORIA -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">Análise de Despesas por Categoria</span>
+            <span class="mono-tag" id="finSavingsRateBadge">Saldo Livre: 0%</span>
+          </div>
+          <div class="bar-list" id="finCategoryChart"></div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           ABA DE TAREFAS & PRODUTIVIDADE
+           ========================================== -->
+      <div id="tab-tarefas" class="tab-panel">
+        <div class="section-header">
+          <div class="section-title-group">
+            <h1>Gestão de Tarefas</h1>
+            <p>Organize suas demandas de Trabalho, Estudos e Extras por prioridade, data, horário e status de conclusão.</p>
+          </div>
+          <div class="header-actions">
+            <div class="filter-row" id="taskAreaFilters">
+              <button class="filter-chip active" onclick="setTaskAreaFilter('Todas', this)">Todas as Áreas</button>
+              <button class="filter-chip" onclick="setTaskAreaFilter('Trabalho', this)">💼 Trabalho</button>
+              <button class="filter-chip" onclick="setTaskAreaFilter('Estudos', this)">📚 Estudos</button>
+              <button class="filter-chip" onclick="setTaskAreaFilter('Extras', this)">⚡ Extras</button>
+            </div>
+            <button class="btn btn-sm" onclick="clearCompletedTasks()" title="Remover tarefas já concluídas">Limpar Concluídas</button>
+          </div>
+        </div>
+
+        <!-- 5 CARDS DE RESUMO DE TAREFAS -->
+        <div class="grid-5" style="margin-bottom:16px;">
+          <div class="metric-box">
+            <div class="metric-info">
+              <span class="metric-label">Total de Tarefas</span>
+              <span class="metric-val" id="taskTotalCount">0</span>
+              <span class="kpi-sub" id="taskTotalSub">Cadastradas</span>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-info">
+              <span class="metric-label">Pendentes</span>
+              <span class="metric-val" id="taskPendingCount" style="color:var(--orange);">0</span>
+              <span class="kpi-sub" id="taskTodaySub">0 para hoje</span>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-info">
+              <span class="metric-label">Concluídas</span>
+              <span class="metric-val" id="taskDoneCount" style="color:var(--green);">0</span>
+              <span class="kpi-sub">Finalizadas</span>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-info">
+              <span class="metric-label">Alta Prioridade</span>
+              <span class="metric-val" id="taskHighPriorityCount" style="color:var(--red);">0</span>
+              <span class="kpi-sub">Pendentes urgentes</span>
+            </div>
+          </div>
+          <div class="metric-box" style="border-color:var(--border-yellow);">
+            <div class="metric-info">
+              <span class="metric-label">Taxa de Conclusão</span>
+              <span class="metric-val" id="taskCompletionRate">0%</span>
+              <span class="kpi-sub" id="taskOverdueSub">Progresso geral</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BARRA DE LANÇAMENTO DE NOVA TAREFA -->
+        <div class="form-bar">
+          <select id="taskAreaInput" class="select">
+            <option value="Trabalho">💼 Trabalho</option>
+            <option value="Estudos">📚 Estudos</option>
+            <option value="Extras">⚡ Extras</option>
+          </select>
+          <input type="text" id="taskTitleInput" class="input input-grow" placeholder="Descrição da tarefa (ex: Finalizar relatório, Estudar Estrutura de Dados)..." onkeydown="if(event.key==='Enter') addTaskItem()" />
+          <select id="taskPriorityInput" class="select">
+            <option value="Alta">🔥 Prioridade Alta</option>
+            <option value="Média" selected>⚡ Prioridade Média</option>
+            <option value="Baixa">🌱 Prioridade Baixa</option>
+          </select>
+          <input type="date" id="taskDateInput" class="input" />
+          <input type="time" id="taskTimeInput" class="input" value="09:00" />
+          <button class="btn btn-yellow" onclick="addTaskItem()">+ Adicionar Tarefa</button>
+        </div>
+
+        <!-- DUAS JANELAS SEPARADAS: PENDENTES vs CONCLUÍDAS -->
+        <div class="grid-2" style="margin-bottom:16px;">
+          <!-- JANELA 1: TAREFAS PENDENTES -->
+          <div class="panel-card expense-window" style="border-top-color:var(--yellow);">
+            <div class="panel-header">
+              <div class="panel-title-wrap">
+                <span class="panel-title" style="color:var(--yellow);">⏳ Tarefas Pendentes</span>
+                <span class="pill-tag yellow" id="windowPendingTasksBadge">0</span>
+              </div>
+              <div class="filter-row" id="taskPeriodFilters">
+                <button class="filter-chip active" onclick="setTaskPeriodFilter('Todas', this)">Todas</button>
+                <button class="filter-chip" onclick="setTaskPeriodFilter('Hoje', this)">Hoje</button>
+                <button class="filter-chip" onclick="setTaskPeriodFilter('Atrasadas', this)">Atrasadas</button>
+                <button class="filter-chip" onclick="setTaskPeriodFilter('Futuras', this)">Próximas</button>
+              </div>
+            </div>
+            <div class="item-list" id="tasksPendingList"></div>
+          </div>
+
+          <!-- JANELA 2: TAREFAS CONCLUÍDAS -->
+          <div class="panel-card income-window">
+            <div class="panel-header">
+              <div class="panel-title-wrap">
+                <span class="panel-title" style="color:var(--green);">✓ Tarefas Concluídas</span>
+                <span class="pill-tag green" id="windowDoneTasksBadge">0</span>
+              </div>
+              <div class="filter-row" id="taskPriorityFilters">
+                <button class="filter-chip active" onclick="setTaskPriorityFilter('Todas', this)">Todas Prioridades</button>
+                <button class="filter-chip" onclick="setTaskPriorityFilter('Alta', this)">Alta</button>
+                <button class="filter-chip" onclick="setTaskPriorityFilter('Média', this)">Média</button>
+                <button class="filter-chip" onclick="setTaskPriorityFilter('Baixa', this)">Baixa</button>
+              </div>
+            </div>
+            <div class="item-list" id="tasksDoneList"></div>
+          </div>
+        </div>
+
+        <!-- PROGRESSO POR ÁREA -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">Progresso e Distribuição por Área</span>
+            <span class="mono-tag" id="taskAreaSummaryBadge">Produtividade</span>
+          </div>
+          <div class="bar-list" id="taskAreaChart"></div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           ABA DE SINCRONIZAÇÃO (PC & CELULAR)
+           ========================================== -->
+      <div id="tab-config" class="tab-panel">
+        <div class="section-header">
+          <div class="section-title-group">
+            <h1>Sincronização Simultânea (PC &amp; Celular)</h1>
+            <p>Conecte seu banco na nuvem para atualizar suas finanças ao mesmo tempo no computador e no celular.</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-yellow" onclick="switchTabByName('financeiro')">← Voltar ao Financeiro</button>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- BLOCO 1: SINCRONIZAÇÃO EM TEMPO REAL (PC ⇄ CELULAR) -->
+          <div class="panel-card" style="border-color:var(--yellow);">
+            <div class="panel-header">
+              <span class="panel-title">1. Sincronização em Tempo Real (Firebase)</span>
+              <span class="mono-tag" id="cloudSyncStatusBadge">Apenas Local</span>
+            </div>
+            <p style="font-size:0.78rem;color:var(--text-gray);line-height:1.5;margin-bottom:12px;">
+              Com a sincronização ativa, qualquer lançamento financeiro registrado no PC aparece <strong>automaticamente em segundos no celular</strong> (e vice-versa).
+            </p>
+            <div class="modal-form">
+              <label>URL do Firebase Realtime Database</label>
+              <input type="url" id="firebaseUrlInput" class="input" placeholder="https://seu-projeto-default-rtdb.firebaseio.com" />
+              <label>Seu Código / Chave Pessoal de Sincronização (use o mesmo no PC e Celular)</label>
+              <input type="text" id="cloudSyncIdInput" class="input" placeholder="Ex: allys_lifeos_2026" value="allys_lifeos" />
+              <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+                <button class="btn btn-yellow" onclick="saveCloudConfig()">Salvar &amp; Conectar Tempo Real</button>
+                <button class="btn" onclick="pushStateToCloud(true)">Enviar p/ Nuvem Agora</button>
+                <button class="btn" onclick="pullStateFromCloud(true)">Baixar da Nuvem Agora</button>
+                <button class="btn" onclick="disconnectCloudSync()">Desconectar</button>
+              </div>
+              <div id="cloudTestResult" style="font-size:0.76rem;color:var(--yellow);margin-top:6px;min-height:18px;"></div>
+            </div>
+          </div>
+
+          <!-- BLOCO 2: CONECTAR NO CELULAR EM 1 CLIQUE + PASSO A PASSO -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <span class="panel-title">2. Como Abrir Simultâneo no Celular</span>
+              <span class="pill-tag yellow">Pareamento Rápido</span>
+            </div>
+
+            <div class="sync-step-box">
+              <div><strong>Passo 1 (Criar Banco Grátis — 1 min):</strong> Acesse <code>console.firebase.google.com</code> → <em>Criar Projeto</em> → menu <em>Realtime Database</em> → <em>Criar banco de dados</em> (modo de teste) e copie a URL gerada (ex: <code>https://...-rtdb.firebaseio.com</code>).</div>
+              <div style="margin-top:6px;"><strong>Passo 2 (Abrir no Celular):</strong> Você pode hospedar este arquivo <code>.html</code> gratuitamente no <strong>Netlify Drop</strong> (<code>app.netlify.com/drop</code>) ou <strong>GitHub Pages</strong>, ou abrir o arquivo no navegador do celular e colar o código de pareamento abaixo:</div>
+            </div>
+
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-yellow btn-sm" onclick="copyPairingCode()">📋 Copiar Código de Pareamento</button>
+              <button class="btn btn-sm" onclick="openImportPairingModal()">📥 Colar Código de Pareamento no Celular</button>
+              <button class="btn btn-sm" onclick="copyDirectSyncLink()">🔗 Copiar Link com Auto-Conexão</button>
+            </div>
+
+            <div class="qr-preview-box" id="qrPairingContainer" style="display:none;">
+              <div class="qr-img-wrap">
+                <img id="qrPairingImg" alt="QR Code de Pareamento" src="" />
+              </div>
+              <div style="font-size:0.75rem;color:var(--text-gray);line-height:1.45;">
+                <strong style="color:var(--yellow);display:block;margin-bottom:4px;">QR Code do Link Sincronizado</strong>
+                Se o seu aplicativo estiver hospedado online, basta apontar a câmera do celular para abrir já conectado na mesma conta!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <nav class="mobile-bottom-nav">
+    <button class="mob-tab-btn active" data-mobtab="financeiro" onclick="switchTabByName('financeiro')">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span>Financeiro</span>
+    </button>
+    <button class="mob-tab-btn" data-mobtab="tarefas" onclick="switchTabByName('tarefas')">
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>Tarefas</span>
+    </button>
+    <button class="mob-tab-btn" data-mobtab="config" onclick="switchTabByName('config')">
+      <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      <span>Sincronizar</span>
+    </button>
+  </nav>
+
+  <!-- UNIVERSAL EDIT MODAL -->
+  <div class="modal-backdrop" id="universalModal">
+    <div class="modal-card">
+      <div class="modal-title" id="uniModalTitle">Editar</div>
+      <div class="modal-form" id="uniModalBody"></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeUniversalModal()">Cancelar</button>
+        <button class="btn btn-yellow" id="uniModalSaveBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIDDEN UNIVERSAL PHOTO INPUT -->
+  <input type="file" id="universalPhotoInput" accept="image/*" style="display:none;" onchange="handleUniversalPhotoSelected(event)" />
+
+  <!-- PHOTO LIGHTBOX MODAL -->
+  <div class="lightbox-backdrop" id="photoLightboxModal" onclick="if(event.target===this) closePhotoLightbox()">
+    <div class="lightbox-box">
+      <div class="lightbox-img-stage">
+        <img id="lightboxImgEl" src="" alt="Visualização do Comprovante" />
+      </div>
+      <div class="lightbox-footer">
+        <div>
+          <div id="lightboxCaptionEl" style="font-weight:700;font-size:0.9rem;color:var(--text-white);">Comprovante</div>
+          <div id="lightboxMetaEl" style="font-size:0.74rem;color:var(--text-gray);margin-top:2px;"></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <a id="lightboxDownloadBtn" class="btn btn-sm" href="#" download="comprovante_financeiro.jpg">⬇ Baixar Foto</a>
+          <button class="btn btn-sm" id="lightboxDeleteBtn" style="display:none;">Excluir Foto</button>
+          <button class="btn btn-yellow btn-sm" onclick="closePhotoLightbox()">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-notification" id="appToast"></div>
+
+  <script>
+    // Mesma STORAGE_KEY para preservar 100% dos dados já salvos no navegador e na nuvem
+    const STORAGE_KEY = 'life_os_pro_minimal_bw_v4';
+    const TODAY_ISO = (() => {
+      const d = new Date();
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    })();
+    const DEVICE_ID = 'dev_' + Math.random().toString(36).slice(2, 9);
+
+    let selectedDateISO = TODAY_ISO;
+    let financeCurrentMonth = TODAY_ISO.slice(0, 7);
+    let activeIncomeStatusFilter = 'Todos';
+    let activeExpenseStatusFilter = 'Todos';
+    let activeTimelineStatusFilter = 'Todos';
+
+    // Real-time cloud sync state
+    let cloudPollTimer = null;
+    let cloudEventSource = null;
+    let pushDebounceTimer = null;
+    let isApplyingRemoteUpdate = false;
+    let lastCloudSyncTimeStr = '';
+
+    function offsetISO(baseIso, daysDelta) {
+      const [y, m, d] = baseIso.split('-').map(Number);
+      const dt = new Date(y, m - 1, d + daysDelta);
+      return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+    }
+
+    // Padroniza descrições automaticamente (Ex: "salário" -> "Salário", "TICKET VR" -> "Ticket VR")
+    function formatStandardTitle(rawText) {
+      if (!rawText) return '';
+      const lowerExceptions = new Set(['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'para', 'por', 'com', 'no', 'na']);
+      const upperAcronyms = new Set(['vr', 'va', 'vt', 'pix', 'inss', 'fgts', 'mei', 'cnpj', 'cpf', 'ipva', 'iptu', 'ir']);
+      return String(rawText)
+        .trim()
+        .split(/\s+/)
+        .map((word, idx) => {
+          // Mantém frações de parcelas como (1/3) ou 2/10 intactas
+          if (/^[\(\[]?\d+\/\d+[\)\]]?$/.test(word)) return word;
+          const cleanLower = word.toLowerCase();
+          if (upperAcronyms.has(cleanLower)) return cleanLower.toUpperCase();
+          if (idx > 0 && lowerExceptions.has(cleanLower)) return cleanLower;
+          return cleanLower.charAt(0).toUpperCase() + cleanLower.slice(1);
+        })
+        .join(' ');
+    }
+
+    // Estrutura completa preservada para nunca perder dados ao sincronizar com o banco existente
+    let state = {
+      lastUpdatedAt: 0,
+      profilePhoto: '',
+      photos: [],
+      firebaseUrl: '',
+      cloudSyncId: 'allys_lifeos',
+      routineSyncConfig: {
+        Trabalho: true,
+        Estudos: true,
+        Extras: true,
+        Financeiro: true
+      },
+      routineItems: [
+        { id: 'r1', time: '07:00', title: 'Acordar, hidratação e café da manhã', category: 'Rotina', scope: 'daily', date: null },
+        { id: 'r2', time: '08:00', title: 'Início do expediente de trabalho', category: 'Trabalho', scope: 'daily', date: null },
+        { id: 'r3', time: '18:15', title: 'Treino de musculação (ABC)', category: 'Treino', scope: 'daily', date: null },
+        { id: 'r4', time: '20:00', title: 'Bloco de Estudos (Faculdade / Código)', category: 'Estudo', scope: 'daily', date: null },
+        { id: 'r5', time: '22:00', title: 'Lazer / Game e desacelerar', category: 'Lazer', scope: 'daily', date: null }
+      ],
+      completionByDate: {
+        [offsetISO(TODAY_ISO, -2)]: { 'r1': true, 'r2': true, 'r3': true, 'r4': true, 'r5': true },
+        [offsetISO(TODAY_ISO, -1)]: { 'r1': true, 'r2': true, 'r3': true, 'r4': true },
+        [TODAY_ISO]: {}
+      },
+      tasks: [
+        { id: 't1', area: 'Trabalho', title: 'Finalizar arquitetura do sistema web', date: TODAY_ISO, time: '10:30', priority: 'Alta', showInRoutine: true, done: false },
+        { id: 't2', area: 'Trabalho', title: 'Sprint Review com equipe técnica', date: offsetISO(TODAY_ISO, 1), time: '14:00', priority: 'Média', showInRoutine: true, done: false },
+        { id: 't3', area: 'Estudos', title: 'Praticar algoritmos e estrutura de dados', date: TODAY_ISO, time: '20:30', priority: 'Alta', showInRoutine: true, done: false },
+        { id: 't4', area: 'Estudos', title: 'Entregar lista de Engenharia de Software', date: offsetISO(TODAY_ISO, 2), time: '19:30', priority: 'Alta', showInRoutine: true, done: false },
+        { id: 't5', area: 'Extras', title: 'Comprar creatina e whey protein', date: TODAY_ISO, time: '17:30', priority: 'Média', showInRoutine: true, done: false },
+        { id: 't6', area: 'Extras', title: 'Organizar documentos mensais', date: offsetISO(TODAY_ISO, 3), time: '16:00', priority: 'Baixa', showInRoutine: false, done: false }
+      ],
+      finances: [
+        { id: 'f1', type: 'Receita', desc: 'Salário / Pro-labore Mensal', amount: 4200, category: 'Salário / Renda', date: TODAY_ISO.slice(0, 7) + '-05', status: 'Pago', showInRoutine: false },
+        { id: 'f2', type: 'Despesa', desc: 'Aluguel + Condomínio + Internet', amount: 1350, category: 'Moradia / Fixas', date: TODAY_ISO.slice(0, 7) + '-10', status: 'Pago', showInRoutine: true },
+        { id: 'f3', type: 'Despesa', desc: 'Supermercado & Dieta', amount: 750, category: 'Alimentação', date: TODAY_ISO, status: 'Pago', showInRoutine: false },
+        { id: 'f4', type: 'Despesa', desc: 'Mensalidade Faculdade', amount: 350, category: 'Estudos / Faculdade', date: offsetISO(TODAY_ISO, 2), status: 'Pendente', showInRoutine: true },
+        { id: 'f5', type: 'Despesa', desc: 'Academia & Suplementos', amount: 150, category: 'Saúde / Academia', date: TODAY_ISO, status: 'Pago', showInRoutine: false }
+      ],
+      workoutSplits: [],
+      dietGoals: { kcal: 2400, prot: 160, carb: 260, fat: 70, water: 3000 },
+      dietTemplate: [],
+      dietDays: {},
+      notes: [],
+      customTabs: []
+    };
+
+    // TOAST HELPER
+    let toastTimeout = null;
+    function showToast(msg) {
+      const el = document.getElementById('appToast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.add('show');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        el.classList.remove('show');
+      }, 3200);
+    }
+
+    function normalizeFirebaseUrl(raw) {
+      if (!raw) return '';
+      let url = raw.trim().replace(/\/+$/, '');
+      if (url && !/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
+      return url;
+    }
+
+    function getCloudEndpoint(fbUrl, syncId) {
+      const base = normalizeFirebaseUrl(fbUrl || state.firebaseUrl);
+      const id = (syncId || state.cloudSyncId || 'allys_lifeos').trim();
+      if (!base) return '';
+      return base + '/lifeos_' + encodeURIComponent(id) + '.json';
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = Object.assign({}, state, parsed);
+        }
+      } catch (e) {}
+
+      // Auto-pareamento via hash URL
+      try {
+        if (window.location.hash && window.location.hash.startsWith('#sync=')) {
+          const encoded = decodeURIComponent(window.location.hash.slice(6));
+          const decoded = JSON.parse(atob(encoded));
+          if (decoded.firebaseUrl && decoded.cloudSyncId) {
+            state.firebaseUrl = normalizeFirebaseUrl(decoded.firebaseUrl);
+            state.cloudSyncId = decoded.cloudSyncId;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+            setTimeout(() => showToast('✓ Celular conectado automaticamente à nuvem!'), 400);
+          }
+        }
+      } catch (e) {}
+    }
+
+    function saveState(skipCloudPush = false) {
+      try {
+        if (!isApplyingRemoteUpdate) {
+          state.lastUpdatedAt = Date.now();
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (!skipCloudPush && !isApplyingRemoteUpdate && state.firebaseUrl && state.cloudSyncId) {
+          if (pushDebounceTimer) clearTimeout(pushDebounceTimer);
+          pushDebounceTimer = setTimeout(() => {
+            pushStateToCloud(false);
+          }, 350);
+        }
+      } catch (e) {}
+    }
+
+    // =====================================================
+    // SINCRONIZAÇÃO EM TEMPO REAL (PC ⇄ CELULAR)
+    // =====================================================
+    function updateSyncVisualIndicators(statusMode, customMessage) {
+      const hasCloud = !!(state.firebaseUrl && state.cloudSyncId);
+      const sidebarDot = document.getElementById('sidebarSyncDot');
+      const sidebarText = document.getElementById('sidebarSyncStatusText');
+      const sidebarAction = document.getElementById('sidebarCloudActionText');
+      const navBadge = document.getElementById('navSyncBadge');
+      const topBadge = document.getElementById('topSyncBadge');
+      const topDot = document.getElementById('topSyncDot');
+      const topLabel = document.getElementById('topSyncStateLabel');
+      const topSub = document.getElementById('topSyncSubText');
+      const configBadge = document.getElementById('cloudSyncStatusBadge');
+
+      if (!hasCloud) {
+        if (sidebarDot) sidebarDot.className = 'status-dot';
+        if (sidebarText) sidebarText.textContent = 'Modo Local';
+        if (sidebarAction) sidebarAction.textContent = 'Conectar Celular ⚙';
+        if (navBadge) navBadge.textContent = 'Local';
+        if (topBadge) topBadge.className = 'sync-pill';
+        if (topDot) topDot.className = 'status-dot';
+        if (topLabel) topLabel.textContent = 'Sincronização Local';
+        if (topSub) topSub.textContent = 'Seus dados estão salvos e o saldo do mês anterior é transferido automaticamente para o mês atual.';
+        if (configBadge) configBadge.textContent = 'Apenas Local';
+        return;
+      }
+
+      const isSyncing = statusMode === 'syncing';
+      if (sidebarDot) sidebarDot.className = 'status-dot ' + (isSyncing ? 'syncing' : 'online');
+      if (sidebarText) sidebarText.textContent = isSyncing ? 'Sincronizando...' : 'PC ⇄ Celular Ativo';
+      if (sidebarAction) sidebarAction.textContent = lastCloudSyncTimeStr || 'Tempo Real';
+      if (navBadge) navBadge.textContent = 'Online';
+      if (topBadge) topBadge.className = 'sync-pill connected';
+      if (topDot) topDot.className = 'status-dot ' + (isSyncing ? 'syncing' : 'online');
+      if (topLabel) topLabel.textContent = isSyncing ? 'Sincronizando...' : 'Simultâneo Ativo (PC ⇄ Celular)';
+      if (topSub) {
+        topSub.textContent = customMessage || (lastCloudSyncTimeStr
+          ? `ID: ${state.cloudSyncId} • Última atualização às ${lastCloudSyncTimeStr}`
+          : `ID: ${state.cloudSyncId} • Conectado em tempo real`);
+      }
+      if (configBadge) configBadge.textContent = '✓ Simultâneo Ativo';
+    }
+
+    async function pushStateToCloud(showMsg = false) {
+      const endpoint = getCloudEndpoint(state.firebaseUrl, state.cloudSyncId);
+      if (!endpoint) {
+        if (showMsg) showToast('Configure a URL do Firebase na aba Sincronização primeiro.');
+        return;
+      }
+      const resEl = document.getElementById('cloudTestResult');
+      updateSyncVisualIndicators('syncing');
+      try {
+        if (!state.lastUpdatedAt) state.lastUpdatedAt = Date.now();
+        const payload = {
+          updatedAt: new Date().toISOString(),
+          lastUpdatedAt: state.lastUpdatedAt,
+          deviceId: DEVICE_ID,
+          state: Object.assign({}, state)
+        };
+        const resp = await fetch(endpoint, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        lastCloudSyncTimeStr = new Date().toLocaleTimeString('pt-BR').slice(0, 5);
+        updateSyncVisualIndicators('online');
+        if (showMsg) {
+          if (resEl) resEl.textContent = '✓ Dados enviados para a nuvem! O celular já pode receber automaticamente.';
+          showToast('✓ Sincronizado com a nuvem!');
+        }
+      } catch (e) {
+        updateSyncVisualIndicators('online', 'Falha de conexão com a URL do Firebase.');
+        if (showMsg && resEl) resEl.textContent = 'Erro ao enviar: verifique se a URL do Firebase Realtime Database está correta e em modo público/teste.';
+      }
+    }
+
+    function applyRemotePayloadIfNewer(data, forceApply = false) {
+      if (!data || !data.state) return false;
+      const remoteTs = Number(data.lastUpdatedAt || data.state.lastUpdatedAt || 0);
+      const localTs = Number(state.lastUpdatedAt || 0);
+
+      if (!forceApply && data.deviceId && data.deviceId === DEVICE_ID) {
+        return false;
+      }
+
+      if (forceApply || remoteTs > localTs || localTs === 0) {
+        isApplyingRemoteUpdate = true;
+        const keepFbUrl = state.firebaseUrl;
+        const keepSyncId = state.cloudSyncId;
+        state = Object.assign({}, state, data.state);
+        state.firebaseUrl = keepFbUrl || data.state.firebaseUrl || '';
+        state.cloudSyncId = keepSyncId || data.state.cloudSyncId || 'allys_lifeos';
+        state.lastUpdatedAt = remoteTs || Date.now();
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {}
+        lastCloudSyncTimeStr = new Date().toLocaleTimeString('pt-BR').slice(0, 5);
+        renderAll();
+        isApplyingRemoteUpdate = false;
+        return true;
+      }
+      return false;
+    }
+
+    async function pullStateFromCloud(showMsg = false, forceApply = false) {
+      const urlInput = document.getElementById('firebaseUrlInput');
+      const idInput = document.getElementById('cloudSyncIdInput');
+      const urlVal = normalizeFirebaseUrl((urlInput && urlInput.value) ? urlInput.value : state.firebaseUrl);
+      const syncId = ((idInput && idInput.value) ? idInput.value : state.cloudSyncId || 'allys_lifeos').trim();
+      const resEl = document.getElementById('cloudTestResult');
+
+      const endpoint = getCloudEndpoint(urlVal, syncId);
+      if (!endpoint) {
+        if (showMsg && resEl) resEl.textContent = 'Informe a URL do seu Firebase Realtime Database primeiro.';
+        return;
+      }
+
+      if (showMsg) updateSyncVisualIndicators('syncing');
+      try {
+        const resp = await fetch(endpoint);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const data = await resp.json();
+        if (data && data.state) {
+          const applied = applyRemotePayloadIfNewer(data, forceApply || showMsg);
+          lastCloudSyncTimeStr = new Date().toLocaleTimeString('pt-BR').slice(0, 5);
+          updateSyncVisualIndicators('online');
+          if (showMsg) {
+            if (resEl) resEl.textContent = '✓ Dados baixados da nuvem e sincronizados na tela!';
+            showToast('✓ Dados atualizados da nuvem!');
+          } else if (applied) {
+            showToast('↻ Atualizado simultaneamente com outro aparelho');
+          }
+        } else {
+          await pushStateToCloud(false);
+          if (showMsg && resEl) resEl.textContent = '✓ Banco inicializado com os seus dados atuais!';
+        }
+      } catch (e) {
+        if (showMsg && resEl) resEl.textContent = 'Erro ao baixar da nuvem: verifique a URL do Firebase e as Regras (.read / .write = true).';
+      }
+    }
+
+    function startRealtimeCloudSync() {
+      stopRealtimeCloudSync();
+      const endpoint = getCloudEndpoint(state.firebaseUrl, state.cloudSyncId);
+      if (!endpoint) {
+        updateSyncVisualIndicators('local');
+        renderPairingQR();
+        return;
+      }
+
+      updateSyncVisualIndicators('online');
+      renderPairingQR();
+      pullStateFromCloud(false, false);
+
+      try {
+        if (window.EventSource) {
+          cloudEventSource = new EventSource(endpoint);
+          cloudEventSource.addEventListener('put', (ev) => {
+            try {
+              const packet = JSON.parse(ev.data);
+              if (packet && packet.path === '/' && packet.data) {
+                applyRemotePayloadIfNewer(packet.data, false);
+              } else {
+                pullStateFromCloud(false, false);
+              }
+            } catch (e) {}
+          });
+        }
+      } catch (e) {}
+
+      cloudPollTimer = setInterval(() => {
+        if (!document.hidden && state.firebaseUrl && state.cloudSyncId) {
+          pullStateFromCloud(false, false);
+        }
+      }, 4500);
+    }
+
+    function stopRealtimeCloudSync() {
+      if (cloudPollTimer) {
+        clearInterval(cloudPollTimer);
+        cloudPollTimer = null;
+      }
+      if (cloudEventSource) {
+        try { cloudEventSource.close(); } catch (e) {}
+        cloudEventSource = null;
+      }
+    }
+
+    function syncNowManual() {
+      if (!state.firebaseUrl) {
+        switchTabByName('config');
+        showToast('Configure a URL do Firebase para sincronizar PC e Celular.');
+        return;
+      }
+      pullStateFromCloud(true, true);
+    }
+
+    function saveCloudConfig() {
+      const rawUrl = document.getElementById('firebaseUrlInput').value;
+      const rawId = document.getElementById('cloudSyncIdInput').value;
+      state.firebaseUrl = normalizeFirebaseUrl(rawUrl);
+      state.cloudSyncId = (rawId || 'allys_lifeos').trim();
+      saveState(true);
+      renderAll();
+      const resEl = document.getElementById('cloudTestResult');
+      if (state.firebaseUrl) {
+        if (resEl) resEl.textContent = '✓ Sincronização simultânea ativada! Verificando dados na nuvem...';
+        startRealtimeCloudSync();
+        showToast('✓ Sincronização em tempo real ativada!');
+      } else {
+        stopRealtimeCloudSync();
+        if (resEl) resEl.textContent = 'URL removida. Operando apenas localmente.';
+      }
+    }
+
+    function disconnectCloudSync() {
+      state.firebaseUrl = '';
+      document.getElementById('firebaseUrlInput').value = '';
+      stopRealtimeCloudSync();
+      saveState(true);
+      renderAll();
+      const resEl = document.getElementById('cloudTestResult');
+      if (resEl) resEl.textContent = 'Sincronização em nuvem desconectada.';
+      showToast('Desconectado da nuvem.');
+    }
+
+    function getPairingCodeString() {
+      const fb = normalizeFirebaseUrl(document.getElementById('firebaseUrlInput')?.value || state.firebaseUrl);
+      const id = (document.getElementById('cloudSyncIdInput')?.value || state.cloudSyncId || 'allys_lifeos').trim();
+      if (!fb) return '';
+      return btoa(JSON.stringify({ firebaseUrl: fb, cloudSyncId: id }));
+    }
+
+    function copyTextFallback(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    function copyPairingCode() {
+      const code = getPairingCodeString();
+      if (!code) {
+        showToast('Salve a URL do Firebase primeiro para gerar o código.');
+        return;
+      }
+      copyTextFallback(code);
+      showToast('✓ Código de Pareamento copiado! Cole no celular.');
+    }
+
+    function copyDirectSyncLink() {
+      const code = getPairingCodeString();
+      if (!code) {
+        showToast('Salve a URL do Firebase primeiro para gerar o link.');
+        return;
+      }
+      const baseUrl = window.location.href.split('#')[0];
+      const fullLink = `${baseUrl}#sync=${encodeURIComponent(code)}`;
+      copyTextFallback(fullLink);
+      showToast('✓ Link com auto-conexão copiado!');
+    }
+
+    function openImportPairingModal() {
+      openUniversalModal('Conectar Celular via Código de Pareamento', `
+        <p style="font-size:0.78rem;color:var(--text-gray);margin-bottom:6px;">
+          Cole abaixo o Código de Pareamento copiado do seu computador (ou de outro aparelho) para conectar instantaneamente ao mesmo banco de dados:
+        </p>
+        <label>Código de Pareamento</label>
+        <input type="text" id="mpair_code" class="input" placeholder="Cole o código aqui..." />
+      `, () => {
+        const raw = document.getElementById('mpair_code').value.trim();
+        if (!raw) return;
+        try {
+          const decoded = JSON.parse(atob(raw));
+          if (decoded.firebaseUrl) {
+            state.firebaseUrl = normalizeFirebaseUrl(decoded.firebaseUrl);
+            state.cloudSyncId = decoded.cloudSyncId || 'allys_lifeos';
+            saveState(true);
+            closeUniversalModal();
+            renderAll();
+            startRealtimeCloudSync();
+            showToast('✓ Aparelho pareado e sincronizado!');
+          }
+        } catch (e) {
+          showToast('Código inválido. Verifique se copiou corretamente.');
+        }
+      });
+    }
+
+    function renderPairingQR() {
+      const box = document.getElementById('qrPairingContainer');
+      const img = document.getElementById('qrPairingImg');
+      if (!box || !img) return;
+      const code = getPairingCodeString();
+      if (!code || !state.firebaseUrl) {
+        box.style.display = 'none';
+        return;
+      }
+      const baseUrl = window.location.href.split('#')[0];
+      const syncUrl = `${baseUrl}#sync=${encodeURIComponent(code)}`;
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(syncUrl)}`;
+      box.style.display = 'flex';
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && state.firebaseUrl && state.cloudSyncId) {
+        pullStateFromCloud(false, false);
+      }
+    });
+    window.addEventListener('focus', () => {
+      if (state.firebaseUrl && state.cloudSyncId) {
+        pullStateFromCloud(false, false);
+      }
+    });
+
+    function toggleMobileSidebar(open) {
+      document.getElementById('mainSidebar').classList.toggle('open', open);
+      document.getElementById('sidebarBackdrop').classList.toggle('open', open);
+    }
+
+    function updateLiveClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('pt-BR');
+      const dateStr = now.toLocaleDateString('pt-BR');
+      const sidebarEl = document.getElementById('liveSidebarClock');
+      if (sidebarEl) sidebarEl.textContent = `${dateStr} • ${timeStr}`;
+    }
+    setInterval(updateLiveClock, 1000);
+
+    // HELPERS DE DATA E MOEDA
+    function parseISO(isoStr) {
+      const [y, m, d] = isoStr.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+    function toISO(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+    function addMonthsClamped(baseIso, monthsToAdd) {
+      const [y, m, d] = baseIso.split('-').map(Number);
+      const targetYear = y + Math.floor((m - 1 + monthsToAdd) / 12);
+      const targetMonth = (((m - 1 + monthsToAdd) % 12) + 12) % 12;
+      const maxDayInTargetMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
+      const clampedDay = Math.min(d, maxDayInTargetMonth);
+      return toISO(new Date(targetYear, targetMonth, clampedDay));
+    }
+    function formatShortDate(isoStr) {
+      if (!isoStr) return '';
+      const [, m, d] = isoStr.split('-');
+      return `${d}/${m}`;
+    }
+    function formatCurrency(val) {
+      return Number(val || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    // UNIVERSAL MODAL
+    let currentModalSaveCallback = null;
+    function openUniversalModal(title, bodyHtml, onSave) {
+      document.getElementById('uniModalTitle').textContent = title;
+      document.getElementById('uniModalBody').innerHTML = bodyHtml;
+      currentModalSaveCallback = onSave;
+      document.getElementById('uniModalSaveBtn').onclick = () => {
+        if (currentModalSaveCallback) currentModalSaveCallback();
+      };
+      document.getElementById('universalModal').classList.add('open');
+    }
+    function closeUniversalModal() {
+      document.getElementById('universalModal').classList.remove('open');
+      currentModalSaveCallback = null;
+    }
+
+    // =====================================================
+    // LÓGICA DO FINANCEIRO + REPETIÇÃO MENSAL + EXTRATO CRONOLÓGICO
+    // =====================================================
+    function changeFinanceMonth(delta) {
+      const [y, m] = financeCurrentMonth.split('-').map(Number);
+      const d = new Date(y, m - 1 + delta, 1);
+      financeCurrentMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      renderAll();
+    }
+
+    function goToCurrentFinanceMonth() {
+      financeCurrentMonth = TODAY_ISO.slice(0, 7);
+      renderAll();
+    }
+
+    function setIncomeStatusFilter(statusVal, btnEl) {
+      activeIncomeStatusFilter = statusVal;
+      document.querySelectorAll('#incomeStatusFilters .filter-chip').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderFinanceTab();
+    }
+
+    function setExpenseStatusFilter(statusVal, btnEl) {
+      activeExpenseStatusFilter = statusVal;
+      document.querySelectorAll('#expenseStatusFilters .filter-chip').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderFinanceTab();
+    }
+
+    function setTimelineStatusFilter(statusVal, btnEl) {
+      activeTimelineStatusFilter = statusVal;
+      document.querySelectorAll('#timelineStatusFilters .filter-chip').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderFinanceTab();
+    }
+
+    function getPreviousMonthLabel(ym) {
+      const [y, m] = ym.split('-').map(Number);
+      const prevDate = new Date(y, m - 2, 1);
+      const monthsShort = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+      return `${monthsShort[prevDate.getMonth()]}/${prevDate.getFullYear()}`;
+    }
+
+    function getMonthFinanceStats(ym) {
+      const prevItems = (state.finances || []).filter(f => f.date && f.date.slice(0, 7) < ym);
+      const prevIncome = prevItems.filter(f => f.type === 'Receita').reduce((acc, x) => acc + Number(x.amount || 0), 0);
+      const prevExpense = prevItems.filter(f => f.type === 'Despesa').reduce((acc, x) => acc + Number(x.amount || 0), 0);
+      const carryover = Math.round((prevIncome - prevExpense) * 100) / 100;
+
+      const items = (state.finances || [])
+        .filter(f => f.date && f.date.startsWith(ym))
+        .sort((a, b) => (a.date || '').localeCompare(b.date || '') || (a.id || '').localeCompare(b.id || ''));
+
+      const income = items.filter(f => f.type === 'Receita').reduce((acc, x) => acc + Number(x.amount || 0), 0);
+      const expense = items.filter(f => f.type === 'Despesa').reduce((acc, x) => acc + Number(x.amount || 0), 0);
+      const pending = items.filter(f => f.type === 'Despesa' && f.status === 'Pendente').reduce((acc, x) => acc + Number(x.amount || 0), 0);
+      const monthBalance = Math.round((income - expense) * 100) / 100;
+      const balance = Math.round((carryover + monthBalance) * 100) / 100;
+
+      return { items, income, expense, carryover, monthBalance, balance, pending };
+    }
+
+    function createFinanceEntriesWithMonths(type, desc, inputAmount, monthsCount, repeatMode, category, baseDateISO, status, showInRoutine) {
+      const count = Math.max(1, parseInt(monthsCount, 10) || 1);
+      const standardizedDesc = formatStandardTitle(desc);
+      const perMonthAmount = repeatMode === 'divide'
+        ? Math.round((inputAmount / count) * 100) / 100
+        : Math.round(inputAmount * 100) / 100;
+
+      for (let i = 0; i < count; i++) {
+        const iso = addMonthsClamped(baseDateISO, i);
+        const label = count > 1 ? `${standardizedDesc} (${i + 1}/${count})` : standardizedDesc;
+        state.finances.push({
+          id: 'f_' + Date.now() + '_' + i + '_' + Math.random().toString(36).slice(2, 5),
+          type,
+          desc: label,
+          amount: perMonthAmount,
+          category,
+          date: iso,
+          status: i === 0 ? status : 'Pendente',
+          showInRoutine: !!showInRoutine
+        });
+      }
+    }
+
+    function addFinanceItem() {
+      const type = document.getElementById('finTypeInput').value;
+      const descEl = document.getElementById('finDescInput');
+      const valEl = document.getElementById('finValInput');
+      const repeatMode = document.getElementById('finRepeatModeInput').value;
+      const monthsCount = Math.max(1, parseInt(document.getElementById('finInstallmentsInput').value, 10) || 1);
+      const category = document.getElementById('finCatInput').value;
+      const date = document.getElementById('finDateInput').value || TODAY_ISO;
+      const status = document.getElementById('finStatusInput').value;
+
+      const desc = descEl.value.trim();
+      const amount = parseFloat(valEl.value);
+      if (!desc || isNaN(amount)) { descEl.focus(); return; }
+
+      createFinanceEntriesWithMonths(type, desc, amount, monthsCount, repeatMode, category, date, status, false);
+      descEl.value = '';
+      valEl.value = '';
+      document.getElementById('finInstallmentsInput').value = '1';
+      financeCurrentMonth = date.slice(0, 7);
+      saveState();
+      renderAll();
+      showToast(monthsCount > 1
+        ? `✓ Lançado por ${monthsCount} meses seguidos!`
+        : `✓ ${type} registrada com sucesso!`);
+    }
+
+    function toggleFinanceStatus(finId) {
+      const f = state.finances.find(x => x.id === finId);
+      if (f) f.status = f.status === 'Pago' ? 'Pendente' : 'Pago';
+      saveState();
+      renderAll();
+    }
+
+    function editFinanceItem(finId) {
+      const f = state.finances.find(x => x.id === finId);
+      if (!f) return;
+      openUniversalModal('Editar Lançamento & Repetir nos Próximos Meses', `
+        <label>Tipo</label>
+        <select id="mf_type" class="select">
+          <option value="Receita" ${f.type==='Receita'?'selected':''}>Receita (+)</option>
+          <option value="Despesa" ${f.type==='Despesa'?'selected':''}>Despesa (-)</option>
+        </select>
+        <label>Descrição</label>
+        <input type="text" id="mf_desc" class="input" value="${formatStandardTitle(f.desc)}" />
+        <label>Valor (R$)</label>
+        <input type="number" step="0.01" id="mf_amount" class="input" value="${f.amount}" />
+        <label>Categoria</label>
+        <input type="text" id="mf_cat" class="input" value="${f.category}" />
+        <label>Data deste Lançamento</label>
+        <input type="date" id="mf_date" class="input" value="${f.date}" />
+        <label>Status Atual</label>
+        <select id="mf_status" class="select">
+          <option value="Pago" ${f.status==='Pago'?'selected':''}>Pago / Recebido</option>
+          <option value="Pendente" ${f.status==='Pendente'?'selected':''}>Pendente</option>
+        </select>
+
+        <div class="repeat-box">
+          <strong style="font-size:0.76rem;color:var(--yellow);">↻ Repetir para os Próximos Meses (Opcional)</strong>
+          <label>Quantidade de próximos meses que vai se repetir (0 = não repetir)</label>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <input type="number" min="0" max="120" id="mf_repeat_months" class="input" style="width:90px;" value="0" />
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mf_repeat_months').value=1">+1 Mês</button>
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mf_repeat_months').value=3">+3 Meses</button>
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mf_repeat_months').value=6">+6 Meses</button>
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mf_repeat_months').value=11">+11 Meses</button>
+          </div>
+          <label>Modo de Valor nos Próximos Meses</label>
+          <select id="mf_repeat_mode" class="select">
+            <option value="same">Repetir o mesmo valor em cada mês</option>
+            <option value="divide">Dividir este valor total entre todos os meses</option>
+          </select>
+        </div>
+      `, () => {
+        const newType = document.getElementById('mf_type').value;
+        const rawDesc = formatStandardTitle(document.getElementById('mf_desc').value.trim() || f.desc);
+        const rawAmount = parseFloat(document.getElementById('mf_amount').value) || f.amount;
+        const newCat = document.getElementById('mf_cat').value.trim() || f.category;
+        const newDate = document.getElementById('mf_date').value || f.date;
+        const newStatus = document.getElementById('mf_status').value;
+        const extraMonths = Math.max(0, parseInt(document.getElementById('mf_repeat_months').value, 10) || 0);
+        const repeatMode = document.getElementById('mf_repeat_mode').value;
+
+        const totalMonths = 1 + extraMonths;
+        const cleanBaseDesc = rawDesc.replace(/\s*\(\d+\/\d+\)\s*$/, '');
+        const perMonthVal = (extraMonths > 0 && repeatMode === 'divide')
+          ? Math.round((rawAmount / totalMonths) * 100) / 100
+          : Math.round(rawAmount * 100) / 100;
+
+        f.type = newType;
+        f.desc = extraMonths > 0 ? `${cleanBaseDesc} (1/${totalMonths})` : rawDesc;
+        f.amount = perMonthVal;
+        f.category = newCat;
+        f.date = newDate;
+        f.status = newStatus;
+
+        if (extraMonths > 0) {
+          for (let i = 1; i <= extraMonths; i++) {
+            const targetDate = addMonthsClamped(newDate, i);
+            state.finances.push({
+              id: 'f_' + Date.now() + '_rep_' + i + '_' + Math.random().toString(36).slice(2, 5),
+              type: newType,
+              desc: `${cleanBaseDesc} (${i + 1}/${totalMonths})`,
+              amount: perMonthVal,
+              category: newCat,
+              date: targetDate,
+              status: 'Pendente',
+              showInRoutine: f.showInRoutine
+            });
+          }
+        }
+
+        saveState();
+        closeUniversalModal();
+        renderAll();
+        showToast(extraMonths > 0
+          ? `✓ Atualizado e repetido para mais ${extraMonths} mês(es)!`
+          : '✓ Lançamento atualizado!');
+      });
+    }
+
+    function duplicateFinanceItem(finId) {
+      const f = state.finances.find(x => x.id === finId);
+      if (!f) return;
+      const nextMonthISO = addMonthsClamped(f.date || selectedDateISO, 1);
+      const cleanDesc = formatStandardTitle((f.desc || '').replace(/\s*\(\d+\/\d+\)\s*$/, ''));
+
+      openUniversalModal('Duplicar / Repetir Lançamento por Vários Meses', `
+        <p style="font-size:0.8rem;color:var(--text-gray);margin-bottom:8px;">
+          Lançamento base: <strong style="color:var(--yellow);">${formatStandardTitle(f.desc)}</strong> (${formatCurrency(f.amount)})
+        </p>
+        <label>Descrição para as Cópias</label>
+        <input type="text" id="mdup_desc" class="input" value="${cleanDesc}" />
+        <label>Valor (R$)</label>
+        <input type="number" step="0.01" id="mdup_amount" class="input" value="${f.amount}" />
+        <label>Data do 1º Mês de Destino</label>
+        <input type="date" id="mdup_date" class="input" value="${nextMonthISO}" />
+        <div style="display:flex;gap:6px;margin-top:2px;">
+          <button type="button" class="btn btn-sm" onclick="document.getElementById('mdup_date').value='${f.date}'">Mesmo Mês (${formatShortDate(f.date)})</button>
+          <button type="button" class="btn btn-sm btn-yellow" onclick="document.getElementById('mdup_date').value='${nextMonthISO}'">Próximo Mês (${formatShortDate(nextMonthISO)})</button>
+        </div>
+        <div class="repeat-box">
+          <label>Por quantos meses seguidos deseja repetir a partir desta data?</label>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <input type="number" min="1" max="120" id="mdup_months" class="input" style="width:90px;" value="1" />
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mdup_months').value=1">1x</button>
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mdup_months').value=3">3 Meses</button>
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mdup_months').value=6">6 Meses</button>
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mdup_months').value=12">12 Meses</button>
+          </div>
+          <label>Status Inicial</label>
+          <select id="mdup_status" class="select">
+            <option value="Pendente" selected>Pendente</option>
+            <option value="Pago">Pago / Recebido</option>
+          </select>
+        </div>
+      `, () => {
+        const newDesc = formatStandardTitle(document.getElementById('mdup_desc').value.trim() || cleanDesc);
+        const newAmount = parseFloat(document.getElementById('mdup_amount').value) || f.amount;
+        const startDate = document.getElementById('mdup_date').value || nextMonthISO;
+        const monthsCount = Math.max(1, parseInt(document.getElementById('mdup_months').value, 10) || 1);
+        const newStatus = document.getElementById('mdup_status').value;
+
+        for (let i = 0; i < monthsCount; i++) {
+          const targetDate = addMonthsClamped(startDate, i);
+          const itemLabel = monthsCount > 1 ? `${newDesc} (${i + 1}/${monthsCount})` : newDesc;
+          state.finances.push({
+            id: 'f_' + Date.now() + '_' + i + '_' + Math.random().toString(36).slice(2, 6),
+            type: f.type,
+            desc: itemLabel,
+            amount: newAmount,
+            category: f.category,
+            date: targetDate,
+            status: i === 0 ? newStatus : 'Pendente',
+            showInRoutine: f.showInRoutine
+          });
+        }
+
+        financeCurrentMonth = startDate.slice(0, 7);
+        saveState();
+        closeUniversalModal();
+        renderAll();
+        showToast(monthsCount > 1
+          ? `✓ Lançamento repetido por ${monthsCount} meses!`
+          : '✓ Lançamento duplicado!');
+      });
+    }
+
+    function duplicateAllFixedExpensesToNextMonth() {
+      const curMonthItems = state.finances.filter(f => f.date && f.date.startsWith(financeCurrentMonth));
+
+      if (curMonthItems.length === 0) {
+        showToast('Nenhum lançamento no mês atual para repetir.');
+        return;
+      }
+
+      openUniversalModal('Repetir Contas do Mês nos Próximos Meses', `
+        <p style="font-size:0.8rem;color:var(--text-gray);margin-bottom:8px;">
+          Você possui <strong style="color:var(--yellow);">${curMonthItems.length} lançamentos</strong> em <strong>${financeCurrentMonth}</strong>.
+        </p>
+        <div class="repeat-box" style="margin-bottom:8px;">
+          <label>Por quantos próximos meses deseja repetir estas contas?</label>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <input type="number" min="1" max="60" id="mbulk_months" class="input" style="width:90px;" value="1" />
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mbulk_months').value=1">1 Mês</button>
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mbulk_months').value=3">3 Meses</button>
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mbulk_months').value=6">6 Meses</button>
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('mbulk_months').value=12">12 Meses</button>
+          </div>
+        </div>
+        <div style="max-height:150px;overflow-y:auto;background:var(--bg-elevated);padding:8px;border-radius:6px;font-size:0.75rem;">
+          ${curMonthItems.map(it => `<div>• ${it.type === 'Receita' ? '+' : '-'} ${formatStandardTitle(it.desc)} (${formatCurrency(it.amount)})</div>`).join('')}
+        </div>
+      `, () => {
+        const monthsCount = Math.max(1, parseInt(document.getElementById('mbulk_months').value, 10) || 1);
+        let firstNextYM = financeCurrentMonth;
+
+        for (let mOffset = 1; mOffset <= monthsCount; mOffset++) {
+          curMonthItems.forEach((it, idx) => {
+            const targetDate = addMonthsClamped(it.date, mOffset);
+            if (mOffset === 1 && idx === 0) firstNextYM = targetDate.slice(0, 7);
+            state.finances.push({
+              id: 'f_' + Date.now() + '_' + mOffset + '_' + idx + '_' + Math.random().toString(36).slice(2, 5),
+              type: it.type,
+              desc: formatStandardTitle(it.desc),
+              amount: it.amount,
+              category: it.category,
+              date: targetDate,
+              status: 'Pendente',
+              showInRoutine: it.showInRoutine
+            });
+          });
+        }
+
+        financeCurrentMonth = firstNextYM;
+        saveState();
+        closeUniversalModal();
+        renderAll();
+        showToast(`✓ Contas repetidas para os próximos ${monthsCount} mês(es)!`);
+      });
+    }
+
+    function deleteFinanceItem(finId) {
+      state.finances = state.finances.filter(x => x.id !== finId);
+      saveState();
+      renderAll();
+    }
+
+    // Constrói cada linha no novo estilo de 2 linhas (Opção 2)
+    function buildFinanceItemRowHtml(f) {
+      const isIncome = f.type === 'Receita';
+      const isPaid = f.status === 'Pago';
+      const statusLabel = isPaid ? (isIncome ? 'Recebido' : 'Pago') : 'Pendente';
+      const statusPillClass = isPaid ? 'green' : 'yellow';
+
+      return `
+        <div class="item-row">
+          <div class="item-left">
+            <div class="item-top-line">
+              <button class="check-box ${isPaid ? 'checked' : ''}" onclick="toggleFinanceStatus('${f.id}')" title="Alternar Pago/Pendente">
+                ${isPaid ? '✓' : ''}
+              </button>
+              <span class="mono-tag">${formatShortDate(f.date)}</span>
+              <span class="item-title">${formatStandardTitle(f.desc)}</span>
+              <span class="item-amount ${isIncome ? 'income' : 'expense'}">
+                ${isIncome ? '+' : '-'} ${formatCurrency(f.amount)}
+              </span>
+            </div>
+            <div class="item-bottom-line">
+              <span class="pill-tag">${f.category}</span>
+              <span class="pill-tag ${statusPillClass}">${statusLabel}</span>
+            </div>
+          </div>
+          <div class="item-actions">
+            ${f.photo ? `<img src="${f.photo}" class="item-thumb" alt="Comprovante" onclick="openPhotoLightbox('${f.id}')" title="Ver comprovante" />` : ''}
+            <button class="btn btn-sm" onclick="attachPhotoToEntity('finance', '${f.id}')" title="Anexar foto do comprovante/recibo">📷</button>
+            <button class="btn btn-sm" onclick="duplicateFinanceItem('${f.id}')" title="Repetir / Duplicar para outros meses">Repetir</button>
+            <button class="btn btn-sm" onclick="editFinanceItem('${f.id}')">Editar</button>
+            <button class="btn btn-sm" onclick="deleteFinanceItem('${f.id}')">Excluir</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFinanceTab() {
+      const [y, m] = financeCurrentMonth.split('-').map(Number);
+      const monthsPt = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+      document.getElementById('finMonthHeaderLabel').textContent = `${monthsPt[m - 1]} ${y}`;
+      const navPill = document.getElementById('navFinMonthPill');
+      if (navPill) navPill.textContent = `${String(m).padStart(2, '0')}/${y}`;
+
+      const stats = getMonthFinanceStats(financeCurrentMonth);
+      const prevLabel = getPreviousMonthLabel(financeCurrentMonth);
+
+      // Card 1: Saldo vindo do mês anterior
+      const carryEl = document.getElementById('finPrevCarryover');
+      const carrySubEl = document.getElementById('finPrevCarryoverSub');
+      carryEl.textContent = formatCurrency(stats.carryover);
+      carryEl.style.color = stats.carryover >= 0 ? 'var(--yellow)' : 'var(--red)';
+      carrySubEl.textContent = stats.carryover !== 0
+        ? `Acumulado até ${prevLabel}`
+        : `Sem saldo anterior (${prevLabel})`;
+
+      // Card 2 & 3: Receitas e Despesas do Mês
+      document.getElementById('finTotalIncome').textContent = formatCurrency(stats.income);
+      document.getElementById('finTotalExpense').textContent = formatCurrency(stats.expense);
+
+      // Card 4: Saldo Livre Acumulado (Mês Atual + Saldo Anterior)
+      const netEl = document.getElementById('finNetBalance');
+      const netSubEl = document.getElementById('finNetBalanceSub');
+      netEl.textContent = formatCurrency(stats.balance);
+      netEl.style.color = stats.balance >= 0 ? 'var(--yellow)' : 'var(--red)';
+      netSubEl.textContent = `Mês: ${formatCurrency(stats.monthBalance)} | Ant: ${formatCurrency(stats.carryover)}`;
+
+      // Card 5: Pendente no mês
+      document.getElementById('finPendingAmount').textContent = formatCurrency(stats.pending);
+
+      // Subtotais nos cabeçalhos de cada janela
+      const totalIncWithPositiveCarry = stats.income + (stats.carryover > 0 ? stats.carryover : 0);
+      const totalExpWithNegativeCarry = stats.expense + (stats.carryover < 0 ? Math.abs(stats.carryover) : 0);
+      document.getElementById('windowIncomeSubtotal').textContent = formatCurrency(totalIncWithPositiveCarry);
+      document.getElementById('windowExpenseSubtotal').textContent = formatCurrency(totalExpWithNegativeCarry);
+
+      // Taxa de economia
+      const savingsPct = totalIncWithPositiveCarry > 0
+        ? Math.max(0, Math.round(((totalIncWithPositiveCarry - stats.expense) / totalIncWithPositiveCarry) * 100))
+        : 0;
+      const savBadge = document.getElementById('finSavingsRateBadge');
+      if (savBadge) savBadge.textContent = `Saldo Livre: ${savingsPct}%`;
+
+      // =====================================================
+      // RENDERIZAR JANELA 1: RECEITAS (+)
+      // =====================================================
+      let incomeItems = stats.items.filter(f => f.type === 'Receita');
+      if (activeIncomeStatusFilter !== 'Todos') {
+        incomeItems = incomeItems.filter(f => f.status === activeIncomeStatusFilter);
+      }
+
+      let incomeHtml = '';
+      const showPositiveCarryoverInIncome = stats.carryover > 0 && activeIncomeStatusFilter !== 'Pendente';
+      if (showPositiveCarryoverInIncome) {
+        incomeHtml += `
+          <div class="item-row carryover-row">
+            <div class="item-left">
+              <div class="item-top-line">
+                <span class="check-box checked" title="Saldo positivo vindo do mês anterior">⇄</span>
+                <span class="mono-tag">01/${String(m).padStart(2, '0')}</span>
+                <span class="item-title">Saldo Vindo do Mês Anterior (${prevLabel})</span>
+                <span class="item-amount carry">+ ${formatCurrency(stats.carryover)}</span>
+              </div>
+              <div class="item-bottom-line">
+                <span class="pill-tag yellow">Transferência Automática</span>
+              </div>
+            </div>
+            <div class="item-actions">
+              <button class="btn btn-sm" onclick="changeFinanceMonth(-1)">Ver Mês Anterior</button>
+            </div>
+          </div>
+        `;
+      }
+
+      if (incomeItems.length === 0 && !showPositiveCarryoverInIncome) {
+        document.getElementById('finIncomesList').innerHTML = `<p style="color:var(--text-dim);font-size:0.8rem;">Nenhuma receita neste filtro para este mês.</p>`;
+      } else {
+        incomeHtml += incomeItems.map(f => buildFinanceItemRowHtml(f)).join('');
+        document.getElementById('finIncomesList').innerHTML = incomeHtml;
+      }
+
+      // =====================================================
+      // RENDERIZAR JANELA 2: DESPESAS (-)
+      // =====================================================
+      let expenseItems = stats.items.filter(f => f.type === 'Despesa');
+      if (activeExpenseStatusFilter !== 'Todos') {
+        expenseItems = expenseItems.filter(f => f.status === activeExpenseStatusFilter);
+      }
+
+      let expenseHtml = '';
+      const showNegativeCarryoverInExpense = stats.carryover < 0 && activeExpenseStatusFilter !== 'Pendente';
+      if (showNegativeCarryoverInExpense) {
+        expenseHtml += `
+          <div class="item-row carryover-row">
+            <div class="item-left">
+              <div class="item-top-line">
+                <span class="check-box checked" title="Saldo negativo vindo do mês anterior">⇄</span>
+                <span class="mono-tag">01/${String(m).padStart(2, '0')}</span>
+                <span class="item-title">Saldo Negativo do Mês Anterior (${prevLabel})</span>
+                <span class="item-amount expense">- ${formatCurrency(Math.abs(stats.carryover))}</span>
+              </div>
+              <div class="item-bottom-line">
+                <span class="pill-tag red">Transferência Automática</span>
+              </div>
+            </div>
+            <div class="item-actions">
+              <button class="btn btn-sm" onclick="changeFinanceMonth(-1)">Ver Mês Anterior</button>
+            </div>
+          </div>
+        `;
+      }
+
+      if (expenseItems.length === 0 && !showNegativeCarryoverInExpense) {
+        document.getElementById('finExpensesList').innerHTML = `<p style="color:var(--text-dim);font-size:0.8rem;">Nenhuma despesa neste filtro para este mês.</p>`;
+      } else {
+        expenseHtml += expenseItems.map(f => buildFinanceItemRowHtml(f)).join('');
+        document.getElementById('finExpensesList').innerHTML = expenseHtml;
+      }
+
+      // =====================================================
+      // RENDERIZAR JANELA 3 (NO FINAL): EXTRATO CRONOLÓGICO POR DATA + AUMENTO/DIMINUIÇÃO E SALDO ACUMULADO
+      // =====================================================
+      let timelineItems = [...stats.items];
+      if (activeTimelineStatusFilter !== 'Todos') {
+        timelineItems = timelineItems.filter(f => f.status === activeTimelineStatusFilter);
+      }
+      timelineItems.sort((a, b) => {
+        const cmpDate = (a.date || '').localeCompare(b.date || '');
+        if (cmpDate !== 0) return cmpDate;
+        if (a.type !== b.type) return a.type === 'Receita' ? -1 : 1;
+        return (a.id || '').localeCompare(b.id || '');
+      });
+
+      let runningBalance = activeTimelineStatusFilter === 'Pendente' ? 0 : stats.carryover;
+      let ledgerRowsHtml = '';
+
+      if (activeTimelineStatusFilter !== 'Pendente' && stats.carryover !== 0) {
+        const isPosCarry = stats.carryover >= 0;
+        ledgerRowsHtml += `
+          <tr class="carry-row">
+            <td><span class="mono-tag">01/${String(m).padStart(2, '0')}/${y}</span></td>
+            <td><span class="pill-tag yellow">Saldo Inicial</span></td>
+            <td><strong style="font-size:0.92rem;color:#fff;">Saldo Transferido do Mês Anterior (${prevLabel})</strong></td>
+            <td><span class="pill-tag yellow">Automático</span></td>
+            <td>
+              <span class="delta-badge ${isPosCarry ? 'up' : 'down'}">
+                ${isPosCarry ? '▲ +' : '▼ -'} ${formatCurrency(Math.abs(stats.carryover))}
+              </span>
+            </td>
+            <td class="running-bal-cell" style="color:${runningBalance >= 0 ? 'var(--yellow)' : 'var(--red)'};">
+              ${formatCurrency(runningBalance)}
+            </td>
+            <td style="text-align:right;">
+              <button class="btn btn-sm" onclick="changeFinanceMonth(-1)">Mês Anterior</button>
+            </td>
+          </tr>
+        `;
+      }
+
+      timelineItems.forEach(item => {
+        const isInc = item.type === 'Receita';
+        const amt = Number(item.amount || 0);
+        runningBalance = Math.round((runningBalance + (isInc ? amt : -amt)) * 100) / 100;
+        const statusLabel = item.status === 'Pago' ? (isInc ? 'Recebido' : 'Pago') : 'Pendente';
+
+        ledgerRowsHtml += `
+          <tr>
+            <td><span class="mono-tag">${formatShortDate(item.date)}/${y}</span></td>
+            <td>
+              <span class="pill-tag ${isInc ? 'green' : 'red'}">
+                ${isInc ? 'Receita (+)' : 'Despesa (-)'}
+              </span>
+            </td>
+            <td>
+              <div style="font-weight:700;font-size:0.93rem;color:#ffffff;">${formatStandardTitle(item.desc)}</div>
+              <div style="font-size:0.72rem;color:var(--text-gray);margin-top:2px;">${item.category}</div>
+            </td>
+            <td>
+              <button class="btn btn-sm" onclick="toggleFinanceStatus('${item.id}')" style="border-color:${item.status === 'Pago' ? 'var(--green)' : 'var(--border-line)'};color:${item.status === 'Pago' ? 'var(--green)' : 'var(--yellow)'};">
+                ${item.status === 'Pago' ? '✓ ' : ''}${statusLabel}
+              </button>
+            </td>
+            <td>
+              <span class="delta-badge ${isInc ? 'up' : 'down'}">
+                ${isInc ? '▲ + Aumento' : '▼ - Diminuição'}: ${isInc ? '+' : '-'} ${formatCurrency(amt)}
+              </span>
+            </td>
+            <td class="running-bal-cell" style="color:${runningBalance >= 0 ? 'var(--green)' : 'var(--red)'};">
+              ${formatCurrency(runningBalance)}
+            </td>
+            <td style="text-align:right;">
+              <div style="display:inline-flex;gap:4px;">
+                <button class="btn btn-sm" onclick="editFinanceItem('${item.id}')">Editar / Repetir</button>
+                <button class="btn btn-sm" onclick="deleteFinanceItem('${item.id}')">×</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      const chronoBody = document.getElementById('finChronologicalBody');
+      if (!ledgerRowsHtml) {
+        chronoBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:18px;">Nenhum lançamento encontrado para exibir no extrato cronológico deste mês.</td></tr>`;
+      } else {
+        chronoBody.innerHTML = ledgerRowsHtml;
+      }
+
+      const timelineBadge = document.getElementById('timelineSummaryBadge');
+      if (timelineBadge) {
+        timelineBadge.textContent = `Saldo Final: ${formatCurrency(runningBalance)}`;
+      }
+
+      // =====================================================
+      // GRÁFICO DE DESPESAS POR CATEGORIA
+      // =====================================================
+      const allExpItems = stats.items.filter(f => f.type === 'Despesa');
+      const totalExp = stats.expense || 1;
+      const catTotals = {};
+      allExpItems.forEach(e => { catTotals[e.category] = (catTotals[e.category] || 0) + Number(e.amount); });
+      const entries = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+      const chartEl = document.getElementById('finCategoryChart');
+      chartEl.innerHTML = entries.map(([cat, val]) => {
+        const pct = Math.round((val / totalExp) * 100);
+        return `
+          <div class="bar-row">
+            <div class="bar-label"><span>${cat}</span><span>${formatCurrency(val)} (${pct}%)</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${pct}%;"></div></div>
+          </div>
+        `;
+      }).join('') || '<p style="color:var(--text-dim);font-size:0.8rem;">Sem despesas registradas neste mês.</p>';
+    }
+
+    function renderConfigTab() {
+      const fbUrlEl = document.getElementById('firebaseUrlInput');
+      if (fbUrlEl && document.activeElement !== fbUrlEl) fbUrlEl.value = state.firebaseUrl || '';
+      const syncIdEl = document.getElementById('cloudSyncIdInput');
+      if (syncIdEl && document.activeElement !== syncIdEl) syncIdEl.value = state.cloudSyncId || 'allys_lifeos';
+
+      const avatarBox = document.getElementById('brandAvatarBox');
+      if (avatarBox) {
+        avatarBox.innerHTML = state.profilePhoto
+          ? `<img src="${state.profilePhoto}" alt="Perfil" />`
+          : 'L';
+      }
+
+      updateSyncVisualIndicators(state.firebaseUrl ? 'online' : 'local');
+      renderPairingQR();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('tab-' + tabId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
+      });
+      document.querySelectorAll('.mob-tab-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-mobtab') === tabId);
+      });
+      toggleMobileSidebar(false);
+    }
+
+    function switchTabByName(tabId) {
+      switchTab(tabId);
+    }
+
+    function downloadFullHtmlFile() {
+      const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'life_os_financeiro.html';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('✓ Arquivo .HTML baixado!');
+    }
+
+    function copyFullHtmlCode() {
+      const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const btn = document.getElementById('copyFullCodeBtn');
+      copyTextFallback(fullHtml);
+      if (btn) btn.textContent = '✓ Código Copiado!';
+      showToast('✓ Código HTML completo copiado!');
+      setTimeout(() => { if (btn) btn.textContent = '📋 Copiar Código Completo'; }, 2500);
+    }
+
+    function exportBackup() {
+      const data = { app: 'LIFE OS PRO Minimalist v5', exportedAt: new Date().toISOString(), state };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `life-os-financeiro-backup-${TODAY_ISO}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('✓ Backup (.json) exportado!');
+    }
+
+    function importBackupFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed.state) state = Object.assign({}, state, parsed.state);
+          saveState();
+          renderAll();
+          showToast('✓ Backup importado com sucesso!');
+        } catch (err) {
+          showToast('Arquivo JSON inválido.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // ANEXO DE COMPROVANTES E FOTO DE PERFIL
+    let currentPhotoTarget = null;
+
+    function compressImageFile(file, maxDim = 960, quality = 0.76) {
+      return new Promise((resolve, reject) => {
+        if (!file || !file.type.startsWith('image/')) {
+          reject(new Error('Invalid image'));
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = reject;
+          img.src = ev.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function triggerProfilePhotoUpload() {
+      currentPhotoTarget = { type: 'profile' };
+      const inp = document.getElementById('universalPhotoInput');
+      if (inp) { inp.value = ''; inp.click(); }
+    }
+
+    function attachPhotoToEntity(type, id) {
+      currentPhotoTarget = { type, id };
+      const inp = document.getElementById('universalPhotoInput');
+      if (inp) { inp.value = ''; inp.click(); }
+    }
+
+    async function handleUniversalPhotoSelected(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file || !currentPhotoTarget) return;
+      try {
+        showToast('Comprimindo e anexando imagem...');
+        const dataUrl = await compressImageFile(file);
+        const { type, id } = currentPhotoTarget;
+
+        if (type === 'profile') {
+          state.profilePhoto = dataUrl;
+          showToast('✓ Foto de perfil atualizada!');
+        } else if (type === 'finance') {
+          const f = state.finances.find(x => x.id === id);
+          if (f) f.photo = dataUrl;
+          showToast('✓ Comprovante anexado!');
+        }
+
+        currentPhotoTarget = null;
+        saveState();
+        renderAll();
+      } catch (e) {
+        showToast('Não foi possível processar a imagem.');
+      }
+    }
+
+    function openPhotoLightbox(finId) {
+      const f = state.finances.find(x => x.id === finId);
+      if (!f || !f.photo) return;
+
+      document.getElementById('lightboxImgEl').src = f.photo;
+      document.getElementById('lightboxCaptionEl').textContent = `Comprovante: ${formatStandardTitle(f.desc)} (${formatCurrency(f.amount)})`;
+      document.getElementById('lightboxMetaEl').textContent = `${f.category} • Data: ${formatShortDate(f.date)}`;
+      document.getElementById('lightboxDownloadBtn').href = f.photo;
+
+      const delBtn = document.getElementById('lightboxDeleteBtn');
+      delBtn.style.display = 'inline-flex';
+      delBtn.onclick = () => {
+        delete f.photo;
+        saveState();
+        renderAll();
+        closePhotoLightbox();
+        showToast('Comprovante removido.');
+      };
+
+      document.getElementById('photoLightboxModal').classList.add('open');
+    }
+
+    function closePhotoLightbox() {
+      document.getElementById('photoLightboxModal').classList.remove('open');
+    }
+
+    // =====================================================
+    // LÓGICA DA ABA DE TAREFAS
+    // =====================================================
+    let activeTaskAreaFilter = 'Todas';
+    let activeTaskPeriodFilter = 'Todas';
+    let activeTaskPriorityFilter = 'Todas';
+
+    function setTaskAreaFilter(areaVal, btnEl) {
+      activeTaskAreaFilter = areaVal;
+      document.querySelectorAll('#taskAreaFilters .filter-chip').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderTasksTab();
+    }
+
+    function setTaskPeriodFilter(periodVal, btnEl) {
+      activeTaskPeriodFilter = periodVal;
+      document.querySelectorAll('#taskPeriodFilters .filter-chip').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderTasksTab();
+    }
+
+    function setTaskPriorityFilter(prioVal, btnEl) {
+      activeTaskPriorityFilter = prioVal;
+      document.querySelectorAll('#taskPriorityFilters .filter-chip').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderTasksTab();
+    }
+
+    function addTaskItem() {
+      const area = document.getElementById('taskAreaInput').value;
+      const titleEl = document.getElementById('taskTitleInput');
+      const priority = document.getElementById('taskPriorityInput').value;
+      const date = document.getElementById('taskDateInput').value || TODAY_ISO;
+      const time = document.getElementById('taskTimeInput').value || '09:00';
+
+      const rawTitle = titleEl.value.trim();
+      if (!rawTitle) { titleEl.focus(); return; }
+
+      if (!Array.isArray(state.tasks)) state.tasks = [];
+      state.tasks.push({
+        id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        area,
+        title: formatStandardTitle(rawTitle),
+        date,
+        time,
+        priority,
+        showInRoutine: true,
+        done: false
+      });
+
+      titleEl.value = '';
+      saveState();
+      renderAll();
+      showToast('✓ Tarefa adicionada com sucesso!');
+    }
+
+    function toggleTaskDone(taskId) {
+      const t = (state.tasks || []).find(x => x.id === taskId);
+      if (!t) return;
+      t.done = !t.done;
+      saveState();
+      renderAll();
+      showToast(t.done ? '✓ Tarefa concluída!' : '⏳ Tarefa reaberta!');
+    }
+
+    function editTaskItem(taskId) {
+      const t = (state.tasks || []).find(x => x.id === taskId);
+      if (!t) return;
+      openUniversalModal('Editar Tarefa', `
+        <label>Área</label>
+        <select id="mt_area" class="select">
+          <option value="Trabalho" ${t.area==='Trabalho'?'selected':''}>💼 Trabalho</option>
+          <option value="Estudos" ${t.area==='Estudos'?'selected':''}>📚 Estudos</option>
+          <option value="Extras" ${t.area==='Extras'?'selected':''}>⚡ Extras</option>
+        </select>
+        <label>Descrição da Tarefa</label>
+        <input type="text" id="mt_title" class="input" value="${formatStandardTitle(t.title)}" />
+        <label>Prioridade</label>
+        <select id="mt_priority" class="select">
+          <option value="Alta" ${t.priority==='Alta'?'selected':''}>🔥 Alta</option>
+          <option value="Média" ${t.priority==='Média'?'selected':''}>⚡ Média</option>
+          <option value="Baixa" ${t.priority==='Baixa'?'selected':''}>🌱 Baixa</option>
+        </select>
+        <label>Data</label>
+        <input type="date" id="mt_date" class="input" value="${t.date || TODAY_ISO}" />
+        <label>Horário</label>
+        <input type="time" id="mt_time" class="input" value="${t.time || '09:00'}" />
+        <label>Status</label>
+        <select id="mt_done" class="select">
+          <option value="false" ${!t.done?'selected':''}>Pendente</option>
+          <option value="true" ${t.done?'selected':''}>Concluída</option>
+        </select>
+      `, () => {
+        t.area = document.getElementById('mt_area').value;
+        t.title = formatStandardTitle(document.getElementById('mt_title').value.trim() || t.title);
+        t.priority = document.getElementById('mt_priority').value;
+        t.date = document.getElementById('mt_date').value || t.date;
+        t.time = document.getElementById('mt_time').value || t.time;
+        t.done = document.getElementById('mt_done').value === 'true';
+        saveState();
+        closeUniversalModal();
+        renderAll();
+        showToast('✓ Tarefa atualizada!');
+      });
+    }
+
+    function duplicateTaskItem(taskId) {
+      const t = (state.tasks || []).find(x => x.id === taskId);
+      if (!t) return;
+      const nextDayISO = offsetISO(t.date || TODAY_ISO, 1);
+      state.tasks.push({
+        id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        area: t.area,
+        title: t.title,
+        date: nextDayISO,
+        time: t.time || '09:00',
+        priority: t.priority,
+        showInRoutine: t.showInRoutine,
+        done: false
+      });
+      saveState();
+      renderAll();
+      showToast(`✓ Tarefa duplicada para ${formatShortDate(nextDayISO)}!`);
+    }
+
+    function deleteTaskItem(taskId) {
+      state.tasks = (state.tasks || []).filter(x => x.id !== taskId);
+      saveState();
+      renderAll();
+      showToast('Tarefa removida.');
+    }
+
+    function clearCompletedTasks() {
+      const doneCount = (state.tasks || []).filter(x => x.done).length;
+      if (doneCount === 0) {
+        showToast('Nenhuma tarefa concluída para limpar.');
+        return;
+      }
+      state.tasks = (state.tasks || []).filter(x => !x.done);
+      saveState();
+      renderAll();
+      showToast(`✓ ${doneCount} tarefa(s) concluída(s) removida(s)!`);
+    }
+
+    function buildTaskRowHtml(t) {
+      const isDone = !!t.done;
+      const isOverdue = !isDone && t.date && t.date < TODAY_ISO;
+      const isToday = t.date === TODAY_ISO;
+      const prioClass = t.priority === 'Alta' ? 'red' : (t.priority === 'Média' ? 'yellow' : 'green');
+      const dateBadgeText = isToday ? 'Hoje' : formatShortDate(t.date);
+
+      return `
+        <div class="item-row" style="${isDone ? 'opacity:0.75;' : ''}">
+          <div class="item-left">
+            <div class="item-top-line">
+              <button class="check-box ${isDone ? 'checked' : ''}" onclick="toggleTaskDone('${t.id}')" title="Marcar como Concluída / Pendente">
+                ${isDone ? '✓' : ''}
+              </button>
+              <span class="mono-tag">${dateBadgeText}${t.time ? ' • ' + t.time : ''}</span>
+              <span class="item-title" style="${isDone ? 'text-decoration:line-through;color:var(--text-gray);' : ''}">${formatStandardTitle(t.title)}</span>
+            </div>
+            <div class="item-bottom-line">
+              <span class="pill-tag">${t.area || 'Geral'}</span>
+              <span class="pill-tag ${prioClass}">Prioridade ${t.priority || 'Média'}</span>
+              ${isOverdue ? '<span class="pill-tag red">⚠ Atrasada</span>' : ''}
+              ${isToday && !isDone ? '<span class="pill-tag yellow">📌 Para Hoje</span>' : ''}
+              ${isDone ? '<span class="pill-tag green">✓ Concluída</span>' : ''}
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-sm" onclick="duplicateTaskItem('${t.id}')" title="Duplicar tarefa para o dia seguinte">+1 Dia</button>
+            <button class="btn btn-sm" onclick="editTaskItem('${t.id}')">Editar</button>
+            <button class="btn btn-sm" onclick="deleteTaskItem('${t.id}')">Excluir</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTasksTab() {
+      const allTasks = Array.isArray(state.tasks) ? state.tasks : [];
+
+      // Filtro global por Área
+      const areaFiltered = activeTaskAreaFilter === 'Todas'
+        ? allTasks
+        : allTasks.filter(t => t.area === activeTaskAreaFilter);
+
+      // Aplicar filtro secundário de Prioridade
+      const prioFiltered = activeTaskPriorityFilter === 'Todas'
+        ? areaFiltered
+        : areaFiltered.filter(t => t.priority === activeTaskPriorityFilter);
+
+      const totalCount = areaFiltered.length;
+      const pendingAll = areaFiltered.filter(t => !t.done);
+      const doneAll = areaFiltered.filter(t => t.done);
+      const highPendingCount = pendingAll.filter(t => t.priority === 'Alta').length;
+      const todayPendingCount = pendingAll.filter(t => t.date === TODAY_ISO).length;
+      const overdueCount = pendingAll.filter(t => t.date && t.date < TODAY_ISO).length;
+      const completionPct = totalCount > 0 ? Math.round((doneAll.length / totalCount) * 100) : 0;
+
+      // Atualizar badge na barra lateral
+      const navPill = document.getElementById('navTasksCountPill');
+      if (navPill) navPill.textContent = `${pendingAll.length} pend.`;
+
+      // Atualizar os 5 Cards de KPI
+      const elTotal = document.getElementById('taskTotalCount');
+      if (elTotal) elTotal.textContent = String(totalCount);
+      const elTotalSub = document.getElementById('taskTotalSub');
+      if (elTotalSub) elTotalSub.textContent = activeTaskAreaFilter === 'Todas' ? 'Todas as áreas' : `Área: ${activeTaskAreaFilter}`;
+
+      const elPend = document.getElementById('taskPendingCount');
+      if (elPend) elPend.textContent = String(pendingAll.length);
+      const elTodaySub = document.getElementById('taskTodaySub');
+      if (elTodaySub) elTodaySub.textContent = `${todayPendingCount} para hoje`;
+
+      const elDone = document.getElementById('taskDoneCount');
+      if (elDone) elDone.textContent = String(doneAll.length);
+
+      const elHigh = document.getElementById('taskHighPriorityCount');
+      if (elHigh) elHigh.textContent = String(highPendingCount);
+
+      const elRate = document.getElementById('taskCompletionRate');
+      if (elRate) elRate.textContent = `${completionPct}%`;
+      const elOverdueSub = document.getElementById('taskOverdueSub');
+      if (elOverdueSub) {
+        elOverdueSub.textContent = overdueCount > 0 ? `⚠ ${overdueCount} atrasada(s)` : 'Em dia!';
+        elOverdueSub.style.color = overdueCount > 0 ? 'var(--red)' : 'var(--green)';
+      }
+
+      // Ordenar pendentes por data + prioridade + hora
+      const prioRank = { 'Alta': 1, 'Média': 2, 'Baixa': 3 };
+      let pendingList = prioFiltered.filter(t => !t.done);
+      if (activeTaskPeriodFilter === 'Hoje') {
+        pendingList = pendingList.filter(t => t.date === TODAY_ISO);
+      } else if (activeTaskPeriodFilter === 'Atrasadas') {
+        pendingList = pendingList.filter(t => t.date && t.date < TODAY_ISO);
+      } else if (activeTaskPeriodFilter === 'Futuras') {
+        pendingList = pendingList.filter(t => t.date && t.date > TODAY_ISO);
+      }
+
+      pendingList.sort((a, b) => {
+        const dCmp = (a.date || '').localeCompare(b.date || '');
+        if (dCmp !== 0) return dCmp;
+        const pCmp = (prioRank[a.priority] || 9) - (prioRank[b.priority] || 9);
+        if (pCmp !== 0) return pCmp;
+        return (a.time || '').localeCompare(b.time || '');
+      });
+
+      const doneList = prioFiltered
+        .filter(t => t.done)
+        .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+      const pendBadge = document.getElementById('windowPendingTasksBadge');
+      if (pendBadge) pendBadge.textContent = `${pendingList.length} tarefa(s)`;
+      const doneBadge = document.getElementById('windowDoneTasksBadge');
+      if (doneBadge) doneBadge.textContent = `${doneList.length} concluída(s)`;
+
+      const pendContainer = document.getElementById('tasksPendingList');
+      if (pendContainer) {
+        pendContainer.innerHTML = pendingList.length
+          ? pendingList.map(t => buildTaskRowHtml(t)).join('')
+          : '<p style="color:var(--text-dim);font-size:0.8rem;">Nenhuma tarefa pendente neste filtro.</p>';
+      }
+
+      const doneContainer = document.getElementById('tasksDoneList');
+      if (doneContainer) {
+        doneContainer.innerHTML = doneList.length
+          ? doneList.map(t => buildTaskRowHtml(t)).join('')
+          : '<p style="color:var(--text-dim);font-size:0.8rem;">Nenhuma tarefa concluída neste filtro.</p>';
+      }
+
+      // Gráfico de Progresso por Área
+      const areas = ['Trabalho', 'Estudos', 'Extras'];
+      const areaChartEl = document.getElementById('taskAreaChart');
+      if (areaChartEl) {
+        areaChartEl.innerHTML = areas.map(aName => {
+          const aItems = allTasks.filter(t => t.area === aName);
+          const aDone = aItems.filter(t => t.done).length;
+          const aPct = aItems.length > 0 ? Math.round((aDone / aItems.length) * 100) : 0;
+          return `
+            <div class="bar-row">
+              <div class="bar-label">
+                <span>${aName}</span>
+                <span>${aDone}/${aItems.length} concluídas (${aPct}%)</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill" style="width:${aPct}%;"></div></div>
+            </div>
+          `;
+        }).join('');
+      }
+      const areaSumBadge = document.getElementById('taskAreaSummaryBadge');
+      if (areaSumBadge) {
+        areaSumBadge.textContent = `Geral: ${completionPct}% Concluído`;
+      }
+    }
+
+    function initDateInputsToToday() {
+      const el = document.getElementById('finDateInput');
+      if (el && !el.value) el.value = TODAY_ISO;
+      const tEl = document.getElementById('taskDateInput');
+      if (tEl && !tEl.value) tEl.value = TODAY_ISO;
+    }
+
+    function renderAll() {
+      renderConfigTab();
+      renderFinanceTab();
+      renderTasksTab();
+    }
+
+    loadState();
+    initDateInputsToToday();
+    updateLiveClock();
+    renderAll();
+    if (state.firebaseUrl && state.cloudSyncId) {
+      startRealtimeCloudSync();
+    }
+  </script>
+</body>
+</html>
